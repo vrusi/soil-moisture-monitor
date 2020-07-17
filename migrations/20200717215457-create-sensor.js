@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       label: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true,
       },
       airValue: {
         type: Sequelize.INTEGER
