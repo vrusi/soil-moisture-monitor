@@ -33,7 +33,7 @@ exports.index = function (req, res) {
             order:
                 [['createdAt', 'DESC']]
         })
-        .then((classrooms) => res.status(200).send(classrooms))
-        .catch((error) => { res.status(400).send(error); });
+        .then((sensor) => res.status(200).send(sensor))
+        .catch((error) => res.status(400).send(error));
 }
 
