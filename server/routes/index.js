@@ -1,6 +1,6 @@
 var express = require('express');
-var sensorsController = require('../controllers/sensorController');
-var plantsController = require('../controllers/plantController');
+var sensorController = require('../controllers/sensorController');
+var plantController = require('../controllers/plantController');
 var router = express.Router();
 
 /* GET home page. */
@@ -8,12 +8,12 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Plants' });
 });
 
-router.post('/sensors', sensorsController.create);
-router.delete('/sensors/:id', sensorsController.delete);
-router.get('/sensors', sensorsController.index);
+router.post('/sensors', sensorController.create);
+router.delete('/sensors/:id', sensorController.delete);
+router.get('/sensors', sensorController.index);
 
-router.post('/plants', plantsController.create);
-router.delete('/plants/:id', plantsController.delete);
-router.get('/plants', plantsController.index);
+router.post('/plants', plantController.create);
+router.delete('/plants/:id', plantController.delete);
+router.get('/plants', plantController.index);
 
 module.exports = router;

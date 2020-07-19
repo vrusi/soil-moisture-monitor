@@ -1,4 +1,4 @@
-var Plant = require('..models').Plant;
+var Plant = require('../models').Plant;
 
 exports.create = function (req, res) {
     return Plant
@@ -9,7 +9,7 @@ exports.create = function (req, res) {
             lastMoistureValue: req.body.lastMoistureValue,
             lastMoisturePercentage: req.body.lastMoisturePercentage
         })
-        .then((plant) => res.status(201).sent(plant))
+        .then((plant) => res.status(201).send(plant))
         .catch((error) => res.status(400).send(error));
 }
 
@@ -32,7 +32,7 @@ exports.index = function (req, res) {
     return Plant
         .findAll({
             order:
-            [['name', 'ASC']]
+                [['name', 'ASC']]
         })
         .then((plant) => res.status(200).send(plant))
         .catch((error) => res.status(400).send(error));
