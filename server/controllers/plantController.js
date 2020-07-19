@@ -10,7 +10,7 @@ exports.create = function (req, res) {
             lastMoisturePercentage: req.body.lastMoisturePercentage
         })
         .then((plant) => res.status(201).send(plant))
-        .catch((error) => res.status(400).send(error));
+        .catch((error) => {res.status(400).send(error); console.log(error);})
 }
 
 exports.delete = function (req, res) {
