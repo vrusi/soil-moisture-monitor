@@ -18,7 +18,7 @@
     </ul>
 
     <form ref="formPlant" @submit.prevent="addPlant">
-      <input v-model="formPlant.sensorID" type="number" placeholder="sensor ID"/>
+      <v-select :options="sensors" placeholder="sensor label" v-model="formPlant.label"></v-select>
       <input v-model="formPlant.name" type="text" placeholder="plant name"/>
       <input v-model="formPlant.conditions" type="text" placeholder="plant conditions"/>
       <button type="submit">Add Plant</button>
@@ -49,7 +49,7 @@ export default {
       },
       plants: [],
       formPlant: {
-        sensorID: null,
+        sensorLabel: "",
         name: "",
         conditions: ""
       }
@@ -89,7 +89,7 @@ export default {
     async addPlant() {
       try {
         const response = await window.axios.post("/plants", {
-          sensorID: this.formPlant.sensorID,
+          sensorLabel: this.formPlant.sensorLabel,
           name: this.formPlant.name,
           conditions: this.formPlant.conditions
         });
@@ -102,3 +102,26 @@ export default {
   }
 };
 </script>
+
+<style>
+body {
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+  text-rendering: optimizelegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-text-size-adjust: none;
+}
+
+h1,.muted {
+  color: #2c3e5099;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+#app {
+  max-width: 30em;
+  margin: 1em auto;
+}
+</style>
