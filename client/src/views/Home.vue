@@ -18,7 +18,7 @@
     </ul>
 
     <form ref="formPlant" @submit.prevent="addPlant">
-      <v-select :options="sensors" placeholder="sensor label" v-model="formPlant.label"></v-select>
+      <v-select :options="sensors" placeholder="sensor label" v-model="formPlant.sensor"></v-select>
       <input v-model="formPlant.name" type="text" placeholder="plant name"/>
       <input v-model="formPlant.conditions" type="text" placeholder="plant conditions"/>
       <button type="submit">Add Plant</button>
@@ -26,13 +26,13 @@
     <ul>
       <li v-for="plant in plants" :key="plant.id">
         {{plant.id}}
-        {{plant.sensorID}}
         {{plant.name}}
         {{plant.conditions}}
         {{plant.lastMoistureValue}}
         {{plant.lastMoisturePercentage}}
       </li>
     </ul>
+            {{formPlant.sensor}}
   </div>
 </template>
 
@@ -49,7 +49,7 @@ export default {
       },
       plants: [],
       formPlant: {
-        sensorLabel: "",
+        sensor: null,
         name: "",
         conditions: ""
       }
@@ -89,7 +89,7 @@ export default {
     async addPlant() {
       try {
         const response = await window.axios.post("/plants", {
-          sensorLabel: this.formPlant.sensorLabel,
+          sensorID: this.formPlant.sensor.id,
           name: this.formPlant.name,
           conditions: this.formPlant.conditions
         });
