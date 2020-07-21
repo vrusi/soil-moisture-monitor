@@ -16,4 +16,6 @@ router.post('/plants', plantController.create);
 router.delete('/plants/:id', plantController.delete);
 router.get('/plants', plantController.index);
 
+router.patch('/plants/:id', plantController.update);
+
 module.exports = router;

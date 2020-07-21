@@ -40,3 +40,26 @@ exports.index = function (req, res) {
     .then((plant) => res.status(200).send(plant))
     .catch((error) => res.status(400).send(error));
 };
+
+exports.update = async function (req, res) {
+  try {
+    let plant = await Plant.findByPk(req.params.id);
+
+    if (req.body.newName) plant.name = req.body.newName;
+
+    if (req.body.newConditions) plant.conditions = req.body.newConditions;
+
+    if (req.body.newSensorID) {
+      plant.setSensor(null);
+      let newSensor = await Sensor.findByPk(req.body.newSensorID);
+      plant.setSensor(newSensor);
+    }
+
+    await plant.save();
+    res.status(200).send(plant);
+    console.log(req.body);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+};
