@@ -12,6 +12,9 @@ router.post('/sensors', sensorController.create);
 router.delete('/sensors/:id', sensorController.delete);
 router.get('/sensors', sensorController.index);
 
+router.patch('/sensors/:id', sensorController.update);
+
+
 router.post('/plants', plantController.create);
 router.delete('/plants/:id', plantController.delete);
 router.get('/plants', plantController.index);

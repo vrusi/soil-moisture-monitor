@@ -42,6 +42,50 @@
     </div>
 
     <div>
+      <p>Update an existing sensor:</p>
+      <form ref="formUpdateSensor" @submit.prevent="updateSensor">
+        <v-select
+          :options="sensors"
+          placeholder="sensor to be updated"
+          v-model="formUpdateSensor.sensor"
+          @input="setSelectedSensor"
+        ></v-select>
+        <input
+          v-if="formUpdateSensor.sensor !== null"
+          v-model="formUpdateSensor.label"
+          type="text"
+          placeholder="new label"
+        />
+        <input
+          v-if="formUpdateSensor.sensor !== null"
+          v-model="formUpdateSensor.airValue"
+          type="number"
+          placeholder="new air value"
+        />
+        <input
+          v-if="formUpdateSensor.sensor !== null"
+          v-model="formUpdateSensor.waterValue"
+          type="number"
+          placeholder="new water value"
+        />
+        <input
+          v-if="formUpdateSensor.sensor !== null"
+          v-model="formUpdateSensor.version"
+          type="text"
+          placeholder="new sensor version"
+        />
+        <v-select
+          v-if="formUpdateSensor.sensor != null"
+          label="name"
+          :options="plants"
+          placeholder="change the plant"
+          v-model="formUpdateSensor.plant"
+        ></v-select>
+        <button type="submit">Update Sensor</button>
+      </form>
+    </div>
+
+    <div>
       <p>Update an existing plant:</p>
       <form ref="formUpdatePlant" @submit.prevent="updatePlant">
         <v-select
@@ -63,7 +107,7 @@
           placeholder="new conditions"
         />
         <v-select
-          v-if="formUpdatePlant.plant != null" 
+          v-if="formUpdatePlant.plant != null"
           :options="sensors"
           placeholder="change the sensor"
           v-model="formUpdatePlant.newSensor"
@@ -96,6 +140,14 @@ export default {
         newSensor: null,
         newName: "",
         newConditions: ""
+      },
+      formUpdateSensor: {
+        sensor: null,
+        label: "",
+        airValue: null,
+        waterValue: null,
+        version: "",
+        plant: null
       }
     };
   },
@@ -151,12 +203,47 @@ export default {
           {
             newName: this.formUpdatePlant.newName,
             newConditions: this.formUpdatePlant.newConditions,
-            newSensorID: this.formUpdatePlant.newSensor != null ? this.formUpdatePlant.newSensor.id : null
+            newSensorID:
+              this.formUpdatePlant.newSensor != null
+                ? this.formUpdatePlant.newSensor.id
+                : null
           }
         );
 
-        this.plants.splice(this.plants.indexOf(this.formUpdatePlant.plant), 1);
+        let plantIndex = this.plants.indexOf(this.formUpdatePlant.plant);
+        this.plants.splice(plantIndex, 1);
         this.plants.push(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    setSelectedSensor(sensor) {
+      this.formUpdateSensor.plant = sensor.plantID;
+      this.formUpdateSensor.label = sensor.label;
+      this.formUpdateSensor.airValue = sensor.airValue;
+      this.formUpdateSensor.waterValue = sensor.waterValue;
+      this.formUpdateSensor.version = sensor.version;
+    },
+
+    async updateSensor() {
+      try {
+        const response = await window.axios.patch(
+          "/sensors/" + this.formUpdateSensor.sensor.id,
+          {
+            id: this.formUpdateSensor.sensor.id,
+            label: this.formUpdateSensor.label,
+            airValue: this.formUpdateSensor.airValue,
+            waterValue: this.formUpdateSensor.waterValue,
+            version: this.formUpdateSensor.version,
+            plantID: this.formUpdateSensor.plant != null ? this.formUpdateSensor.plant.id : null
+          }
+        );
+
+        let sensorIndex = this.sensors.indexOf(this.formUpdateSensor.sensor);
+        this.sensors.splice(sensorIndex, 1);
+        this.sensors.push(response.data);
+        console.log(response);
       } catch (error) {
         console.log(error);
       }

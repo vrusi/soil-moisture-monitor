@@ -1,14 +1,13 @@
 var Sensor = require("../models").Sensor;
+var Plant = require("../models").Plant;
 
 exports.create = function (req, res) {
-  return Sensor.create(
-    {
-      label: req.body.label,
-      airValue: req.body.airValue,
-      waterValue: req.body.waterValue,
-      version: req.body.version,
-    }
-  )
+  return Sensor.create({
+    label: req.body.label,
+    airValue: req.body.airValue,
+    waterValue: req.body.waterValue,
+    version: req.body.version,
+  })
     .then((sensor) => res.status(201).send(sensor))
     .catch((error) => res.status(400).send(error));
 };
@@ -31,5 +30,32 @@ exports.index = function (req, res) {
     order: [["createdAt", "DESC"]],
   })
     .then((sensor) => res.status(200).send(sensor))
-    .catch((error) => {res.status(400).send(error);console.log(error);});
+    .catch((error) => {
+      res.status(400).send(error);
+      console.log(error);
+    });
+};
+
+exports.update = async function (req, res) {
+  try {
+    if (req.body.plantID) {
+      await Sensor.update(
+        { plantID: null },
+        { where: { plantID: req.body.plantID }, returning: true }
+      );
+    }
+    const response = await Sensor.update(req.body, {
+      where: { id: req.body.id },
+      returning: true,
+    });
+    const updatedSensor = response[1][0];
+
+    res.status(200).send(updatedSensor);
+    console.log(response);
+    console.log(req.body);
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
 };
