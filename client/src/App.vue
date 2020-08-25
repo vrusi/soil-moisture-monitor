@@ -1,14 +1,7 @@
 <template>
   <div>
-    <div id="app">
-      <app-header></app-header>
-      <div id="nav">
-        <router-link to="/">Home</router-link>|
-        <router-link to="/plants">Plants</router-link>|
-        <router-link to="/sensors">Sensors</router-link>
-      </div>
-      <router-view />
-    </div>
+    <app-header></app-header>
+    <router-view />
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-default">
+  <nav class="navbar navbar-default" style="margin: 30px;">
     <div class="container-fluid">
       <div class="navbar-header">
         <router-link to="/" class="navbar-brand">Soil Moisture Monitor</router-link>
@@ -14,13 +14,8 @@
             <a>Sensors</a>
           </router-link>
         </ul>
+        <strong class="navbar-text navbar-right">Overall Plant Health</strong>
       </div>
     </div>
   </nav>
 </template>
-
-<script>
-
-export default {
-};
-</script>
