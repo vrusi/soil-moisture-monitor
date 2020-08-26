@@ -1,8 +1,14 @@
 <template>
   <div align="center" class="col">
-    <app-sensor v-for="sensor in sensors" :key="sensor.id" :sensor="sensor" style="margin: 30px"></app-sensor>
+    <app-sensor
+      v-for="sensor in sensors"
+      :key="sensor.id"
+      :sensor="sensor"
+      style="margin: 30px"
+      @deleteSensor="removeSensor"
+    ></app-sensor>
     <hr />
-    <app-new-sensor></app-new-sensor>
+    <app-new-sensor @newSensor="addSensor"></app-new-sensor>
   </div>
 </template>
 
@@ -30,6 +36,17 @@ export default {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  methods: {
+
+    addSensor(sensor) {
+      this.sensors = [...this.sensors, sensor];
+    },
+    
+    removeSensor(sensor) {
+      this.sensors.splice(this.sensors.indexOf(sensor), 1);
+    },
   },
 };
 </script>

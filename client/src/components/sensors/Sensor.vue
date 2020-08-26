@@ -11,7 +11,8 @@
         <li class="list-group-item">Version: {{ sensor.version }}</li>
       </ul>
       <div class="card-body">
-        <a :href="'/sensors/' + sensor.id" class="card-link">MORE</a>
+        <button class="btn btn-primary">MORE</button>
+        <button class="btn btn-primary" @click="deleteSensor">DELETE</button>
       </div>
     </div>
   </div>
@@ -20,11 +21,24 @@
 <script>
 export default {
   data() {
-    return {
-      plants: [],
-    };
+    return {};
   },
+
   props: ["sensor"],
+
+  methods: {
+    async deleteSensor() {
+      try {
+        const response = await window.axios.delete(
+          "/sensors/" + this.sensor.id
+        );
+        console.log(response);
+        this.$emit("deleteSensor", this.sensor);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
 };
 </script>
 
