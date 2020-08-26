@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>New Plant</h1>
-    <form @submit.prevent="addPlant">
+    <form @submit.prevent="addPlant" style="margin: 30px;">
       <!-- TODO: sensors getter -->
       <v-select :options="sensors" placeholder="sensor label" v-model="sensor"></v-select>
       <input v-model="name" type="text" placeholder="plant name" />
