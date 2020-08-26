@@ -1,7 +1,7 @@
 <template>
-  <div style="align:center;">
-    <p>Add a new sensor:</p>
-    <form ref="formAddSensor" @submit.prevent="addSensor">
+  <div>
+    <h1>New Sensor</h1>
+    <form @submit.prevent="addSensor">
       <input v-model="label" type="text" placeholder="label" />
       <input v-model.number="airValue" type="number" placeholder="air value" />
       <input v-model.number="waterValue" type="number" placeholder="water value" />
@@ -31,10 +31,7 @@ export default {
           version: this.version,
         });
 
-        //this.sensors.push(response.data);
         this.$emit('newSensor', response.data);
-        console.log('RESPONSE DATA')
-        console.log(response.data)
       } catch (error) {
         console.log(error);
       }
