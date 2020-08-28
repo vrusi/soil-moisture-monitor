@@ -2,7 +2,6 @@
   <div>
     <h1>New Plant</h1>
     <form @submit.prevent="addPlant" style="margin: 30px;">
-      <!-- TODO: sensors getter -->
       <v-select :options="sensors" placeholder="sensor label" v-model="sensor"></v-select>
       <input v-model="name" type="text" placeholder="plant name" />
       <input v-model="conditions" type="text" placeholder="plant conditions" />
@@ -15,12 +14,18 @@
 export default {
   data() {
     return {
-      sensors: ["TODO: add sensors getter"],
       sensor: null,
       name: "",
       conditions: "",
     };
   },
+
+  computed: {
+    sensors() {
+      return this.$store.getters.sensors;
+    }
+  },
+
   methods: {
     async addPlant() {
       try {

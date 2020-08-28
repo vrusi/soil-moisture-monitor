@@ -17,25 +17,15 @@ import Plant from "./Plant.vue";
 import NewPlant from "./NewPlant.vue";
 
 export default {
-  data() {
-    return {
-      plants: [],
-    };
-  },
-
   components: {
     appPlant: Plant,
     appNewPlant: NewPlant,
   },
 
-  async mounted() {
-    try {
-      const responsePlants = await window.axios.get("plants");
-      this.plants = responsePlants.data;
-      console.log(responsePlants);
-    } catch (error) {
-      console.log(error);
-    }
+  computed: {
+    plants() {
+      return this.$store.getters.plants;
+    },
   },
 
   methods: {

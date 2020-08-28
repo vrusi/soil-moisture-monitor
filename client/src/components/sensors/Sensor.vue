@@ -3,7 +3,7 @@
     <div class="card" style="width:50rem;">
       <h1>{{ sensor.label }}</h1>
       <div class="card-body">
-        <h5 class="card-title">Associated Plant: {{ sensor.plantID }}</h5>
+        <h5 class="card-title">Associated Plant: {{ plant ? plant.name : 'None'}}</h5>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Air Value: {{ sensor.airValue }}</li>
@@ -25,6 +25,12 @@ export default {
   },
 
   props: ["sensor"],
+
+  computed: {
+    plant() {
+      return this.$store.getters.plantById(this.sensor.plantID);
+    },
+  },
 
   methods: {
     async deleteSensor() {
