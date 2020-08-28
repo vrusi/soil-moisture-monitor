@@ -1,33 +1,51 @@
 <template>
-  <div class="row">
-    <div class="card" style="width:50rem;">
-      <h1>{{ sensor.label }}</h1>
-      <div class="card-body">
-        <h5 class="card-title">
-          Associated Plant:
-          <router-link :to="'plants/#' + this.sensor.plantID">
-            <a>{{ plant ? plant.name : 'None'}}</a>
-          </router-link>
-        </h5>
-      </div>
+  
+  <div :id="sensor.id" class="card" style="width:50rem;">
+    <v-card class="mx-auto" max-width="344">
+
+      <v-card-title>{{ sensor.label }}</v-card-title>
+
+      <v-card-subtitle>
+        Associated Plant:
+        <router-link :to="'plants#' + this.sensor.plantID">
+          <a>{{ plant ? plant.name : 'None'}}</a>
+        </router-link>
+      </v-card-subtitle>
+
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Air Value: {{ sensor.airValue }}</li>
         <li class="list-group-item">Water Value: {{ sensor.waterValue }}</li>
         <li class="list-group-item">Version: {{ sensor.version }}</li>
       </ul>
-      <div class="card-body">
-        <button class="btn btn-primary">MORE</button>
-        <button class="btn btn-primary" @click="deleteSensor">DELETE</button>
-      </div>
-    </div>
+
+      <v-card-actions>
+        <v-btn text @click="deleteSensor">DELETE</v-btn>
+
+        <v-btn color="purple" text>Explore</v-btn>
+
+        <v-spacer></v-spacer>
+
+        <v-btn icon @click="show = !show">
+          <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        </v-btn>
+      </v-card-actions>
+
+      <v-expand-transition>
+        <div v-show="show">
+          <v-divider></v-divider>
+
+          <v-card-text>SOME TEXT FOR THE SENSOR?</v-card-text>
+        </div>
+      </v-expand-transition>
+    </v-card>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {};
-  },
+  data: () => ({
+    show: false,
+  }),
 
   props: ["sensor"],
 
@@ -54,12 +72,4 @@ export default {
 </script>
 
 <style scoped>
-img {
-  width: 150px;
-}
-
-.card {
-  border: 1px solid lightgray;
-  border-radius: 2px;
-}
 </style>
