@@ -30,7 +30,7 @@ export default {
 
   methods: {
     addPlant(plant) {
-      this.plants = [...this.plants, plant];
+      this.plants.push(plant);
     },
     removePlant(plant) {
       this.plants.splice(this.plants.indexOf(plant), 1);

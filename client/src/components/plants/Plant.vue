@@ -1,6 +1,5 @@
 <template>
-  <div class="row">
-    <div class="card" style="width:50rem;">
+    <div :id="this.plant.id" class="card" style="width:50rem;">
       <img
         class="card-img-top"
         src="https://image.flaticon.com/icons/png/512/628/628283.png"
@@ -12,15 +11,14 @@
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">PLANT STATUS</li>
-        <li class="list-group-item">Moisture Percentage: {{ plant.lastMoisturePercentage }}</li>
-        <li class="list-group-item">Moisture Value: {{ plant.lastMoistureValue }}</li>
+        <li class="list-group-item">Moisture Percentage: {{ plant.lastMoisturePercentage ? plant.lastMoisturePercentage : 'None' }}</li>
+        <li class="list-group-item">Moisture Value: {{ plant.lastMoistureValue ? plant.lastMoistureValue : 'None'}}</li>
       </ul>
       <div class="card-body">
         <button class="btn btn-primary">MORE</button>
         <button class="btn btn-primary" @click="deletePlant">DELETE</button>
       </div>
     </div>
-  </div>
 </template>
 
 <script>

@@ -3,7 +3,12 @@
     <div class="card" style="width:50rem;">
       <h1>{{ sensor.label }}</h1>
       <div class="card-body">
-        <h5 class="card-title">Associated Plant: {{ plant ? plant.name : 'None'}}</h5>
+        <h5 class="card-title">
+          Associated Plant:
+          <router-link :to="'plants/#' + this.sensor.plantID">
+            <a>{{ plant ? plant.name : 'None'}}</a>
+          </router-link>
+        </h5>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Air Value: {{ sensor.airValue }}</li>

@@ -24,7 +24,7 @@ export default {
 
   methods: {
     addSensor(sensor) {
-      this.sensors = [...this.sensors, sensor];
+      this.sensors.push(sensor);
     },
 
     removeSensor(sensor) {
