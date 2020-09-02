@@ -35,7 +35,7 @@ export default {
           conditions: this.conditions,
         });
 
-        this.$emit("newPlant", response.data);
+        this.$store.mutations.ADD_PLANT(response.data);
       } catch (error) {
         console.log(error);
       }

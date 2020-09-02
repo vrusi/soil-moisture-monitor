@@ -1,8 +1,14 @@
 <template>
-  <div>
-    <app-header></app-header>
-    <router-view />
-  </div>
+  <v-app>
+
+    <v-main>
+      <app-header></app-header>
+      <v-container fluid>
+        <router-view />
+      </v-container>
+    </v-main>
+
+  </v-app>
 </template>
 
 <script>
@@ -26,8 +32,7 @@ export default {
 
       const responsePlants = await window.axios.get("plants");
       const plants = responsePlants.data;
-      this.initPlants(plants)
-
+      this.initPlants(plants);
     } catch (error) {
       console.log(error);
     }
@@ -36,15 +41,15 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
+} */
 
-#nav {
+/* #nav {
   padding: 30px;
 
   a {
@@ -55,5 +60,5 @@ export default {
       color: #42b983;
     }
   }
-}
+} */
 </style>

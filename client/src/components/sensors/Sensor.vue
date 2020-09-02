@@ -1,8 +1,6 @@
 <template>
-  
   <div :id="sensor.id" class="card" style="width:50rem;">
     <v-card class="mx-auto" max-width="344">
-
       <v-card-title>{{ sensor.label }}</v-card-title>
 
       <v-card-subtitle>
@@ -18,13 +16,7 @@
         <li class="list-group-item">Version: {{ sensor.version }}</li>
       </ul>
 
-      <v-card-actions>
-        <v-btn text @click="deleteSensor">DELETE</v-btn>
-
-        <v-btn color="purple" text>Explore</v-btn>
-
-        <v-spacer></v-spacer>
-
+      <v-card-actions style="display:inline;">
         <v-btn icon @click="show = !show">
           <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
@@ -35,6 +27,8 @@
           <v-divider></v-divider>
 
           <v-card-text>SOME TEXT FOR THE SENSOR?</v-card-text>
+          <v-btn text @click="deleteSensor">DELETE</v-btn>
+          <v-btn text @click="editSensor">EDIT</v-btn>
         </div>
       </v-expand-transition>
     </v-card>
@@ -51,7 +45,7 @@ export default {
 
   computed: {
     plant() {
-      return this.$store.getters.plantById(this.sensor.plantID);
+      return this.$store.getters.plantByID(this.sensor.plantID);
     },
   },
 
@@ -67,6 +61,8 @@ export default {
         console.log(error);
       }
     },
+
+    editSensor() {},
   },
 };
 </script>
