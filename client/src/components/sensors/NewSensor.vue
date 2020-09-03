@@ -31,7 +31,7 @@ export default {
           version: this.version,
         });
 
-        this.$emit('newSensor', response.data);
+        this.$store.commit("ADD_SENSOR", response.data);
       } catch (error) {
         console.log(error);
       }

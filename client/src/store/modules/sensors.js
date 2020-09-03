@@ -12,6 +12,14 @@ const mutations = {
       if (sensor.id === updatedSensor.id) return updatedSensor;
       else return sensor;
     });
+  },
+
+  ADD_SENSOR(state, sensor) {
+    state.sensors.push(sensor);
+  },
+
+  DELETE_SENSOR(state, sensor) {
+    state.sensors.splice(state.sensors.indexOf(sensor.id));
   }
 };
 
