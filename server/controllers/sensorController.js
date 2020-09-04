@@ -1,8 +1,8 @@
 var Sensor = require("../models").Sensor;
-var Plant = require("../models").Plant;
 
 exports.create = function (req, res) {
   return Sensor.create({
+    plantID: req.body.plantID,
     label: req.body.label,
     airValue: req.body.airValue,
     waterValue: req.body.waterValue,
