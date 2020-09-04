@@ -2,7 +2,17 @@
   <div>
     <h1>New Plant</h1>
     <form @submit.prevent="addPlant" style="margin: 30px;">
-      <v-select :options="sensors" placeholder="sensor label" v-model="sensor"></v-select>
+      <v-select
+        :items="[...sensors, 'None']"
+        :item-text="'label'"
+        :item-value="'id'"
+        :placeholder="'None'"
+        label="Set sensor"
+        v-model="sensor"
+        dense
+        outlined
+        return-object
+      ></v-select>
       <input v-model="name" type="text" placeholder="plant name" />
       <input v-model="conditions" type="text" placeholder="plant conditions" />
       <button type="submit">Add Plant</button>
@@ -23,7 +33,7 @@ export default {
   computed: {
     sensors() {
       return this.$store.getters.sensors;
-    }
+    },
   },
 
   methods: {
