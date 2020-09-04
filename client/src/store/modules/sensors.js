@@ -23,12 +23,6 @@ const mutations = {
   }
 };
 
-const actions = {
-  initSensors: ({ commit }, sensors) => {
-    commit("SET_SENSORS", sensors);
-  }
-};
-
 const getters = {
   sensors: state => {
     return state.sensors;
@@ -46,6 +40,5 @@ const getters = {
 export default {
   state,
   mutations,
-  actions,
   getters
 };

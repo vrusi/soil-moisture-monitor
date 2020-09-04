@@ -25,24 +25,6 @@ const mutations = {
   }
 };
 
-const actions = {
-  initPlants: ({ commit }, plants) => {
-    commit("SET_PLANTS", plants);
-  },
-
-  updatePlant: ({ commit }, plant) => {
-    commit("UPDATE_PLANT", plant);
-  },
-
-  addPlant: ({ commit }, plant) => {
-    commit("ADD_PLANT", plant);
-  },
-
-  deletePlant: ({ commit }, plant) => {
-    commit("DELETE_PLANT", plant);
-  }
-};
-
 const getters = {
   plants: state => {
     return state.plants;
@@ -56,6 +38,5 @@ const getters = {
 export default {
   state,
   mutations,
-  actions,
   getters
 };

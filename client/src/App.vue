@@ -1,25 +1,18 @@
 <template>
   <v-app>
-
     <v-main>
       <app-header></app-header>
       <v-container fluid>
         <router-view />
       </v-container>
     </v-main>
-
   </v-app>
 </template>
 
 <script>
 import Header from "./components/Header.vue";
-import { mapActions } from "vuex";
 
 export default {
-  methods: {
-    ...mapActions(["initPlants", "initSensors"]),
-  },
-
   components: {
     appHeader: Header,
   },
@@ -28,11 +21,11 @@ export default {
     try {
       const responseSensors = await window.axios.get("sensors");
       const sensors = responseSensors.data;
-      this.initSensors(sensors);
+      this.$store.commit("SET_SENSORS", sensors);
 
       const responsePlants = await window.axios.get("plants");
       const plants = responsePlants.data;
-      this.initPlants(plants);
+      this.$store.commit("SET_PLANTS", plants);
     } catch (error) {
       console.log(error);
     }
