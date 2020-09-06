@@ -41,6 +41,23 @@ export default {
   methods: {
     async addSensor() {
       try {
+        var sensorAlreadyAttached = this.$store.getters.sensorByPlantID(
+          this.plant.id
+        );
+
+        if (sensorAlreadyAttached) {
+          const responseDetach = await window.axios.patch("/sensors/" + sensorAlreadyAttached.id, {
+            plantID: null,
+            id: sensorAlreadyAttached.id,
+            label: sensorAlreadyAttached.label,
+            airValue: sensorAlreadyAttached.airValue,
+            waterValue: sensorAlreadyAttached.waterValue,
+            version: sensorAlreadyAttached.version,
+          });
+
+          this.$store.commit("UPDATE_SENSOR", responseDetach.data);
+        }
+
         const response = await window.axios.post("/sensors", {
           plantID: this.plant.id,
           label: this.label,
@@ -50,6 +67,12 @@ export default {
         });
 
         this.$store.commit("ADD_SENSOR", response.data);
+
+        this.plant = null;
+        this.label = "";
+        this.airValue = null;
+        this.waterValue = null;
+        this.version = "";
       } catch (error) {
         console.log(error);
       }

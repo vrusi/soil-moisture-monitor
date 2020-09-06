@@ -46,6 +46,10 @@ export default {
         });
 
         this.$store.commit("ADD_PLANT", response.data);
+
+        this.sensor = null;
+        this.name = "";
+        this.conditions = "";
       } catch (error) {
         console.log(error);
       }
