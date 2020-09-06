@@ -90,8 +90,8 @@ export default {
   methods: {
     async deletePlant() {
       try {
-        const response = await window.axios.delete("/plants/" + this.plant.id);
-        this.$store.commit("DELETE_PLANT", response.data);
+        await window.axios.delete("/plants/" + this.plant.id);
+        this.$store.commit("DELETE_PLANT", this.plant.id);
       } catch (error) {
         console.log(error);
       }

@@ -101,10 +101,10 @@ export default {
   methods: {
     async deleteSensor() {
       try {
-        const response = await window.axios.delete(
+        await window.axios.delete(
           "/sensors/" + this.sensor.id
         );
-        this.$store.commit("DELETE_SENSOR", response.data);
+        this.$store.commit("DELETE_SENSOR", this.sensor.id);
       } catch (error) {
         console.log(error);
       }

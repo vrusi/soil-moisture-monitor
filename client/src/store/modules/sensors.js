@@ -18,8 +18,8 @@ const mutations = {
     state.sensors.push(sensor);
   },
 
-  DELETE_SENSOR(state, sensor) {
-    state.sensors.splice(state.sensors.indexOf(sensor.id));
+  DELETE_SENSOR(state, sensorID) {
+    state.sensors = state.sensors.filter(sensor => sensor.id !== sensorID);
   }
 };
 

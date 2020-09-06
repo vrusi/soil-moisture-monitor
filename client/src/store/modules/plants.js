@@ -8,11 +8,9 @@ const mutations = {
   },
 
   UPDATE_PLANT(state, updatedPlant) {
-    state.plants = state.plants.map((plant) => {
-        if(plant.id === updatedPlant.id) 
-            return updatedPlant;
-        else
-            return plant;
+    state.plants = state.plants.map(plant => {
+      if (plant.id === updatedPlant.id) return updatedPlant;
+      else return plant;
     });
   },
 
@@ -20,8 +18,8 @@ const mutations = {
     state.plants.push(plant);
   },
 
-  DELETE_PLANT(state, plant) {
-    state.plants.splice(state.plants.indexOf(plant.id));
+  DELETE_PLANT(state, plantID) {
+    state.plants = state.plants.filter(plant => plant.id !== plantID);
   }
 };
 
