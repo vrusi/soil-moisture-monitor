@@ -1,73 +1,89 @@
 <template>
-  <div :id="sensor.id" class="card" style="width:50rem;">
-    <v-card class="mx-auto" max-width="344">
+  <div :id="sensor.id" class="card">
+    <v-card class="mx-auto">
       <v-card-title v-if="!isEditing">{{ sensor.label ? sensor.label : "None" }}</v-card-title>
       <v-card-title v-else>
         <input v-model="newLabel" type="text" :placeholder="sensor.label" />
       </v-card-title>
 
-      <v-card-subtitle v-if="!isEditing">
-        Associated Plant:
-        <router-link :to="'plants#' + this.sensor.plantID">
-          <a>{{ plant ? plant.name : 'None'}}</a>
-        </router-link>
-      </v-card-subtitle>
+      <v-container>
+        <v-row>
+          <v-col cols="2" style="text-align: center;">
+            <i class="fas fa-leaf"></i>
+          </v-col>
+          <v-col v-if="!isEditing">
+            <router-link v-if="plant" :to="'plants#' + this.sensor.plantID">
+              <a>{{ plant.name }}</a>
+            </router-link>
+            <span v-if="!plant">None</span>
+          </v-col>
+          <v-col v-else cols="6">
+            <v-select
+              :items="[...plants, 'None']"
+              :item-text="'name'"
+              :item-value="'id'"
+              :placeholder="plant ? plant.name : 'None'"
+              label="Choose a plant"
+              v-model="newPlant"
+              dense
+              return-object
+            ></v-select>
+          </v-col>
+        </v-row>
 
-      <v-card-subtitle v-else>
-        <v-select
-          :items="[...plants, 'None']"
-          :item-text="'name'"
-          :item-value="'id'"
-          :placeholder="plant ? plant.name : 'None'"
-          label="Attach to a different plant"
-          v-model="newPlant"
-          dense
-          outlined
-          return-object
-        ></v-select>
-      </v-card-subtitle>
+        <v-row>
+          <v-col cols="2" style="text-align: center;">
+            <i class="fas fa-wind"></i>
+          </v-col>
+          <v-col v-if="!isEditing">{{ sensor.airValue ? sensor.airValue : "None"}}</v-col>
+          <v-col v-else>
+            <input v-model="newAirValue" type="text" :placeholder="sensor.airValue" />
+          </v-col>
+        </v-row>
 
-      <ul class="list-group list-group-flush">
-        <li
-          class="list-group-item"
-          v-if="!isEditing"
-        >Air Value: {{ sensor.airValue ? sensor.airValue : "None"}}</li>
-        <li class="list-group-item" v-else>
-          Air Value:
-          <input v-model="newAirValue" type="text" :placeholder="sensor.airValue" />
-        </li>
-        <li
-          class="list-group-item"
-          v-if="!isEditing"
-        >Water Value: {{ sensor.waterValue ? sensor.waterValue : "None"}}</li>
-        <li class="list-group-item" v-else>
-          Water Value:
-          <input v-model="newWaterValue" type="text" :placeholder="sensor.waterValue" />
-        </li>
+        <v-row>
+          <v-col cols="2" style="text-align: center;">
+            <i class="fas fa-water"></i>
+          </v-col>
+          <v-col v-if="!isEditing">{{ sensor.waterValue ? sensor.waterValue : "None"}}</v-col>
+          <v-col v-else>
+            <input v-model="newWaterValue" type="text" :placeholder="sensor.waterValue" />
+          </v-col>
+        </v-row>
 
-        <li
-          class="list-group-item"
-          v-if="!isEditing"
-        >Version: {{ sensor.version ? sensor.version : "None"}}</li>
-        <li class="list-group-item" v-else>
-          Version:
-          <input v-model="newVersion" type="text" :placeholder="sensor.version" />
-        </li>
-      </ul>
+        <v-row>
+          <v-col cols="2" style="text-align: center;">
+            <i class="fas fa-info"></i>
+          </v-col>
 
-      <v-card-actions style="display:inline;">
+          <v-col v-if="!isEditing">{{ sensor.version ? sensor.version : "None"}}</v-col>
+          <v-col v-else>
+            <input v-model="newVersion" type="text" :placeholder="sensor.version" />
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
         <v-btn icon @click="show = !show">
           <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
+        <v-spacer></v-spacer>
       </v-card-actions>
 
       <v-expand-transition>
         <div v-show="show">
-          <v-divider></v-divider>
+          <v-card-text
+            style="text-align: justify;"
+          >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sagittis velit vel accumsan viverra. Nunc ac dui ullamcorper, efficitur arcu a, consequat augue. Vestibulum vel laoreet est. Donec in facilisis enim, condimentum mollis massa. Mauris ullamcorper vehicula arcu, vel vehicula dui venenatis id.</v-card-text>
 
-          <v-btn text @click="deleteSensor">DELETE</v-btn>
-          <v-btn text @click="saveSensor" v-if="isEditing">SAVE</v-btn>
-          <v-btn text @click="editSensor" v-else>EDIT</v-btn>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="deleteSensor">DELETE</v-btn>
+            <v-btn text @click="saveSensor" v-if="isEditing">SAVE</v-btn>
+            <v-btn text @click="editSensor" v-else>EDIT</v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
         </div>
       </v-expand-transition>
     </v-card>
@@ -101,9 +117,7 @@ export default {
   methods: {
     async deleteSensor() {
       try {
-        await window.axios.delete(
-          "/sensors/" + this.sensor.id
-        );
+        await window.axios.delete("/sensors/" + this.sensor.id);
         this.$store.commit("DELETE_SENSOR", this.sensor.id);
       } catch (error) {
         console.log(error);
@@ -123,19 +137,21 @@ export default {
           this.newPlant.id
         );
 
-        const responseDetach = await window.axios.patch(
-          "/sensors/" + sensorToDetach.id,
-          {
-            id: sensorToDetach.id,
-            label: sensorToDetach.label,
-            plantID: null,
-            airValue: sensorToDetach.airValue,
-            waterValue: sensorToDetach.waterValue,
-            version: sensorToDetach.version,
-          }
-        );
+        if (sensorToDetach) {
+          const responseDetach = await window.axios.patch(
+            "/sensors/" + sensorToDetach.id,
+            {
+              id: sensorToDetach.id,
+              label: sensorToDetach.label,
+              plantID: null,
+              airValue: sensorToDetach.airValue,
+              waterValue: sensorToDetach.waterValue,
+              version: sensorToDetach.version,
+            }
+          );
 
-        this.$store.commit("UPDATE_SENSOR", responseDetach.data);
+          this.$store.commit("UPDATE_SENSOR", responseDetach.data);
+        }
 
         /* Attach the plant to the current sensor */
         const responseAttach = await window.axios.patch(
