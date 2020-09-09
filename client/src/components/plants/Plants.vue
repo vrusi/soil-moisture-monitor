@@ -1,8 +1,22 @@
 <template>
-  <div class="col">
-    <app-plant v-for="plant in plants" :key="plant.id" :plant="plant" style="margin: 30px"></app-plant>
-    <hr />
-    <app-new-plant></app-new-plant>
+  <div>
+    <v-container>
+      <v-row>
+        <v-spacer></v-spacer>
+        <v-col>
+          <app-plant v-for="plant in plants" :key="plant.id" :plant="plant" style="margin: 30px"></app-plant>
+        </v-col>
+        <v-spacer></v-spacer>
+      </v-row>
+
+      <hr />
+
+      <v-row>
+        <v-col>
+          <app-new-plant></app-new-plant>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
