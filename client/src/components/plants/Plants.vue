@@ -1,23 +1,23 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-spacer></v-spacer>
-        <v-col>
-          <app-plant v-for="plant in plants" :key="plant.id" :plant="plant" style="margin: 30px"></app-plant>
-        </v-col>
-        <v-spacer></v-spacer>
-      </v-row>
+  <v-container>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-col>
+        <app-plant v-for="plant in plants" :key="plant.id" :plant="plant" style="margin: 30px"></app-plant>
+      </v-col>
+      <v-spacer></v-spacer>
+    </v-row>
 
-      <hr />
+    <hr />
 
-      <v-row>
+    <v-row>
+      <v-spacer>
         <v-col>
           <app-new-plant></app-new-plant>
         </v-col>
-      </v-row>
-    </v-container>
-  </div>
+      </v-spacer>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

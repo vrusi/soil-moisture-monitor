@@ -2,7 +2,6 @@
   <div>
     <v-container>
       <v-row>
-        <v-spacer></v-spacer>
         <v-col cols="6">
           <h1 style="text-align: center;">Add a new plant</h1>
 
@@ -39,7 +38,6 @@
             <v-btn @click="addPlant" :disabled="!valid" color="success" class="mr-4">Add Plant</v-btn>
           </v-form>
         </v-col>
-        <v-spacer></v-spacer>
       </v-row>
     </v-container>
   </div>
