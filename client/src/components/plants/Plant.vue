@@ -1,7 +1,7 @@
 <template>
   <div :id="plant.id" class="card">
-    <v-card class="mx-auto" >
-      <v-img src="https://image.flaticon.com/icons/png/512/628/628283.png" ></v-img>
+    <v-card class="mx-auto">
+      <v-img src="https://image.flaticon.com/icons/png/512/628/628283.png"></v-img>
 
       <v-card-title v-if="!isEditing">{{ plant.name ? plant.name : "None"}}</v-card-title>
       <v-card-title v-else>
@@ -12,25 +12,52 @@
 
       <v-container>
         <v-row>
-          <v-col cols="2" style="text-align:center;">
-            <i class="fas fa-percentage"></i>
+          <v-col cols="2" style="text-align: center;">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  :color="iconColor"
+                  :size="iconSize"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                >fa-percentage</v-icon>
+              </template>
+              <span>{{ tooltipPercentage }}</span>
+            </v-tooltip>
           </v-col>
 
           <v-col>{{ plant.lastMoisturePercentage ? plant.lastMoisturePercentage : 'None' }}</v-col>
         </v-row>
 
         <v-row>
-          <v-col cols="2" style="text-align:center;">
-            <i class="fas fa-tint"></i>
+          <v-col cols="2" style="text-align: center;">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon :color="iconColor" :size="iconSize" dark v-bind="attrs" v-on="on">fa-tint</v-icon>
+              </template>
+              <span>{{ tooltipValue }}</span>
+            </v-tooltip>
           </v-col>
           <v-col>{{ plant.lastMoistureValue ? plant.lastMoistureValue : 'None'}}</v-col>
         </v-row>
 
-        <v-row v-if="!isEditing">
-          <v-col cols="2" style="text-align:center;">
-            <i class="fas fa-microchip"></i>
+        <v-row>
+          <v-col cols="2" style="text-align: center;">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  :color="iconColor"
+                  :size="iconSize"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                >fa-microchip</v-icon>
+              </template>
+              <span>{{ tooltipSensor }}</span>
+            </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col v-if="!isEditing">
             <router-link v-if="sensor" :to="'sensors#' + sensor.id">
               <a>{{ sensor.label }}</a>
             </router-link>
@@ -39,13 +66,8 @@
 
             <v-spacer></v-spacer>
           </v-col>
-        </v-row>
 
-        <v-row v-else>
-          <v-col cols="2" style="text-align:center;">
-            <i class="fas fa-microchip"></i>
-          </v-col>
-          <v-col>
+          <v-col v-else>
             <v-select
               :items="[...sensors, 'None']"
               :item-text="'label'"
@@ -97,6 +119,11 @@ export default {
     newName: "",
     newSensor: null,
     newConditions: "",
+    iconColor: "black",
+    iconSize: "medium",
+    tooltipPercentage: "Current soil moisture percentage",
+    tooltipValue: "Current soil moisture capacitance value",
+    tooltipSensor: "The sensor currently monitoring this plant",
   }),
 
   props: ["plant"],
