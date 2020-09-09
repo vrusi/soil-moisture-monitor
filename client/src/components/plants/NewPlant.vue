@@ -7,7 +7,7 @@
           <v-form :lazy-validation="true" v-model="valid" ref="form">
             <v-text-field
               v-model="name"
-              :rules="nameRules"
+              :rules="textRules"
               :counter="255"
               label="Plant Name"
               required
@@ -15,7 +15,7 @@
 
             <v-text-field
               v-model="conditions"
-              :rules="conditionsRules"
+              :rules="textRules"
               :counter="255"
               label="Plant Conditions"
               required
@@ -49,13 +49,9 @@ export default {
       sensor: null,
       name: "",
       conditions: "",
-      nameRules: [
-        (v) => !!v || "Name is required",
-        (v) => v.length <= 255 || "Name must be less than 255 characters",
-      ],
-      conditionsRules: [
-        (v) => !!v || "Conditions are required",
-        (v) => v.length <= 255 || "Conditions must be less than 255 characters",
+      textRules: [
+        (v) => !!v || "This field is required",
+        (v) => v.length <= 255 || "This field must be less than 255 characters",
       ],
     };
   },
