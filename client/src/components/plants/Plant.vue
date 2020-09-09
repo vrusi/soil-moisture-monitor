@@ -1,7 +1,7 @@
 <template>
-  <div :id="plant.id" class="card" style="width:50rem;">
-    <v-card class="mx-auto" max-width="344">
-      <v-img src="https://image.flaticon.com/icons/png/512/628/628283.png" height="200px"></v-img>
+  <div :id="plant.id" class="card">
+    <v-card class="mx-auto" >
+      <v-img src="https://image.flaticon.com/icons/png/512/628/628283.png" ></v-img>
 
       <v-card-title v-if="!isEditing">{{ plant.name ? plant.name : "None"}}</v-card-title>
       <v-card-title v-else>
