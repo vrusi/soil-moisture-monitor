@@ -1,15 +1,29 @@
 <template>
-  <div align="center" class="col">
-    <app-sensor
-      v-for="sensor in sensors"
-      :key="sensor.id"
-      :sensor="sensor"
-      style="margin: 30px"
-      @deleteSensor="removeSensor"
-    ></app-sensor>
+  <v-container>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-col>
+        <app-sensor
+          v-for="sensor in sensors"
+          :key="sensor.id"
+          :sensor="sensor"
+          style="margin: 30px"
+          @deleteSensor="removeSensor"
+        ></app-sensor>
+      </v-col>
+      <v-spacer></v-spacer>
+    </v-row>
+
     <hr />
-    <app-new-sensor @newSensor="addSensor"></app-new-sensor>
-  </div>
+
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-col>
+        <app-new-sensor @newSensor="addSensor"></app-new-sensor>
+      </v-col>
+      <v-spacer></v-spacer>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
