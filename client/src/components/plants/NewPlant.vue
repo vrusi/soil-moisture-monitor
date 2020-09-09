@@ -1,22 +1,47 @@
 <template>
   <div>
-    <h1>New Plant</h1>
-    <form @submit.prevent="addPlant" style="margin: 30px;">
-      <v-select
-        :items="[...sensors, 'None']"
-        :item-text="'label'"
-        :item-value="'id'"
-        :placeholder="'None'"
-        label="Set sensor"
-        v-model="sensor"
-        dense
-        outlined
-        return-object
-      ></v-select>
-      <input v-model="name" type="text" placeholder="plant name" />
-      <input v-model="conditions" type="text" placeholder="plant conditions" />
-      <button type="submit">Add Plant</button>
-    </form>
+    <v-container>
+      <v-row>
+        <v-spacer></v-spacer>
+        <v-col cols="6">
+          <h1 style="text-align: center;">Add a new plant</h1>
+
+          <v-form :lazy-validation="true" v-model="valid" ref="form">
+            <v-text-field
+              v-model="name"
+              :rules="nameRules"
+              :counter="255"
+              label="Plant Name"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="conditions"
+              :rules="conditionsRules"
+              :counter="255"
+              label="Plant Conditions"
+              required
+            ></v-text-field>
+            <br/>
+
+            <v-select
+              :items="[...sensors, 'None']"
+              :item-text="'label'"
+              :item-value="'id'"
+              :placeholder="'None'"
+              label="Set sensor"
+              v-model="sensor"
+              dense
+              outlined
+              return-object
+            ></v-select>
+
+            <v-btn @click="addPlant" :disabled="!valid" color="success" class="mr-4">Add Plant</v-btn>
+          </v-form>
+        </v-col>
+        <v-spacer></v-spacer>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -24,9 +49,18 @@
 export default {
   data() {
     return {
+      valid: false,
       sensor: null,
       name: "",
       conditions: "",
+      nameRules: [
+        (v) => !!v || "Name is required",
+        (v) => v.length <= 255 || "Name must be less than 255 characters",
+      ],
+      conditionsRules: [
+        (v) => !!v || "Conditions are required",
+        (v) => v.length <= 255 || "Conditions must be less than 255 characters",
+      ],
     };
   },
 
@@ -50,6 +84,7 @@ export default {
         this.sensor = null;
         this.name = "";
         this.conditions = "";
+        this.$refs.form.resetValidation();
       } catch (error) {
         console.log(error);
       }
