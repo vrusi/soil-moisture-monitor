@@ -11,11 +11,11 @@
     <hr />
 
     <v-row>
-      <v-spacer>
+      <v-spacer></v-spacer>
         <v-col>
           <app-new-plant></app-new-plant>
         </v-col>
-      </v-spacer>
+      <v-spacer></v-spacer>
     </v-row>
   </v-container>
 </template>

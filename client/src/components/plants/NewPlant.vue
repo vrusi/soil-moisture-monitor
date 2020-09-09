@@ -1,8 +1,7 @@
 <template>
-  <div>
     <v-container>
       <v-row>
-        <v-col cols="6">
+        <v-col>
           <h1 style="text-align: center;">Add a new plant</h1>
 
           <v-form :lazy-validation="true" v-model="valid" ref="form">
@@ -40,7 +39,6 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
 </template>
 
 <script>
