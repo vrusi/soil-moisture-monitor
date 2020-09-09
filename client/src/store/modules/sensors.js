@@ -34,6 +34,10 @@ const getters = {
 
   sensorByID: state => sensorID => {
     return state.sensors.find(sensor => sensor.id === sensorID);
+  },
+
+  sensorLabelAlreadyExists: state => sensorLabel => {
+    return state.sensors.find(sensor => sensor.label === sensorLabel);
   }
 };
 

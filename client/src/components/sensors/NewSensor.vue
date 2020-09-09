@@ -7,7 +7,7 @@
         <v-form :lazy-validation="true" v-model="valid" ref="form">
           <v-text-field
             v-model="label"
-            :rules="textRules"
+            :rules="labelRules"
             :counter="255"
             label="Sensor Label"
             required
@@ -48,9 +48,12 @@ export default {
       airValue: null,
       waterValue: null,
       version: "",
-      textRules: [
-        (v) => !!v || "This field is required",
-        (v) => v.length <= 255 || "This field must be less than 255 characters",
+      labelRules: [
+        (v) => !!v || "Label is required",
+        (v) => v.length <= 255 || "Label must be less than 255 characters",
+        (v) =>
+          !this.$store.getters.sensorLabelAlreadyExists(v) ||
+          "This label is already taken",
       ],
     };
   },
