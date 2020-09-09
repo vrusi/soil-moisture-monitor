@@ -10,56 +10,79 @@
 
       <v-card-subtitle>PLANT STATUS</v-card-subtitle>
 
-      <ul class="list-group list-group-flush">
-        <li
-          class="list-group-item"
-        >Moisture Percentage: {{ plant.lastMoisturePercentage ? plant.lastMoisturePercentage : 'None' }}</li>
-      </ul>
-      <v-card-actions style="display: inline;">
+      <v-container>
+        <v-row>
+          <v-col cols="2" style="text-align:center;">
+            <i class="fas fa-percentage"></i>
+          </v-col>
+
+          <v-col>{{ plant.lastMoisturePercentage ? plant.lastMoisturePercentage : 'None' }}</v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="2" style="text-align:center;">
+            <i class="fas fa-tint"></i>
+          </v-col>
+          <v-col>{{ plant.lastMoistureValue ? plant.lastMoistureValue : 'None'}}</v-col>
+        </v-row>
+
+        <v-row v-if="!isEditing">
+          <v-col cols="2" style="text-align:center;">
+            <i class="fas fa-microchip"></i>
+          </v-col>
+          <v-col>
+            <router-link v-if="sensor" :to="'sensors#' + sensor.id">
+              <a>{{ sensor.label }}</a>
+            </router-link>
+
+            <span v-else>None</span>
+
+            <v-spacer></v-spacer>
+          </v-col>
+        </v-row>
+
+        <v-row v-else>
+          <v-col cols="2" style="text-align:center;">
+            <i class="fas fa-microchip"></i>
+          </v-col>
+          <v-col>
+            <v-select
+              :items="[...sensors, 'None']"
+              :item-text="'label'"
+              :item-value="'id'"
+              :placeholder="sensor ? sensor.label : 'None'"
+              label="Change sensor"
+              v-model="newSensor"
+              dense
+              outlined
+              return-object
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
         <v-btn icon @click="show = !show">
           <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
+        <v-spacer></v-spacer>
       </v-card-actions>
 
       <v-expand-transition>
         <div v-show="show">
-          <ul>
-            <li
-              class="list-group-item"
-            >Moisture Value: {{ plant.lastMoistureValue ? plant.lastMoistureValue : 'None'}}</li>
-
-            <li v-if="!isEditing" class="list-group-item">
-              Associated Sensor:
-              <router-link v-if="sensor" :to="'sensors#' + sensor.id">
-                <a>{{sensor.label}}</a>
-              </router-link>
-
-              <p v-else>None</p>
-            </li>
-
-            <li v-else class="list-group-item">
-              <v-select
-                :items="[...sensors, 'None']"
-                :item-text="'label'"
-                :item-value="'id'"
-                :placeholder="sensor ? sensor.label : 'None'"
-                label="Change sensor"
-                v-model="newSensor"
-                dense
-                outlined
-                return-object
-              ></v-select>
-            </li>
-          </ul>
-
-          <v-card-text v-if="!isEditing">{{ plant.conditions }}</v-card-text>
+          <v-card-text v-if="!isEditing" style="text-align: justify;">{{ plant.conditions }}</v-card-text>
           <v-card-text v-else>
             <input v-model="newConditions" type="text" :placeholder="plant.conditions" />
           </v-card-text>
 
-          <v-btn text @click="deletePlant">DELETE</v-btn>
-          <v-btn text @click="savePlant" v-if="isEditing">SAVE</v-btn>
-          <v-btn text @click="editPlant" v-else>EDIT</v-btn>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="deletePlant">DELETE</v-btn>
+            <v-btn text @click="savePlant" v-if="isEditing">SAVE</v-btn>
+            <v-btn text @click="editPlant" v-else>EDIT</v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
         </div>
       </v-expand-transition>
     </v-card>

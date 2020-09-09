@@ -1,5 +1,5 @@
 <template>
-  <div align="center" class="col">
+  <div class="col">
     <app-plant v-for="plant in plants" :key="plant.id" :plant="plant" style="margin: 30px"></app-plant>
     <hr />
     <app-new-plant></app-new-plant>
