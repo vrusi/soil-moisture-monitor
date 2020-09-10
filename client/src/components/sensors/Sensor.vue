@@ -3,11 +3,18 @@
     <v-card class="mx-auto">
       <v-card-title v-if="!isEditing">{{ sensor.label ? sensor.label : "None" }}</v-card-title>
       <v-card-title v-else>
-        <input v-model="newLabel" type="text" :placeholder="sensor.label" />
+        <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+          <v-text-field
+            v-model="newLabel"
+            :rules="newLabelRules"
+            :counter="255"
+            label="Sensor Label"
+          ></v-text-field>
+        </v-form>
       </v-card-title>
 
       <v-container>
-        <v-row>
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -22,21 +29,22 @@
             </router-link>
             <span v-if="!plant">None</span>
           </v-col>
-          <v-col v-else cols="6">
-            <v-select
-              :items="[...plants, 'None']"
-              :item-text="'name'"
-              :item-value="'id'"
-              :placeholder="plant ? plant.name : 'None'"
-              label="Choose a plant"
-              v-model="newPlant"
-              dense
-              return-object
-            ></v-select>
+          <v-col v-else>
+            <v-form ref="form" :lazy-validation="true" v-model="valid">
+              <v-select
+                :items="[...plants, 'None']"
+                :item-text="'name'"
+                :item-value="'id'"
+                :placeholder="plant ? plant.name : 'None'"
+                label="Choose a plant"
+                v-model="newPlant"
+                return-object
+              ></v-select>
+            </v-form>
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -47,11 +55,13 @@
           </v-col>
           <v-col v-if="!isEditing">{{ sensor.airValue ? sensor.airValue : "None"}}</v-col>
           <v-col v-else>
-            <input v-model="newAirValue" type="text" :placeholder="sensor.airValue" />
+            <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+              <v-text-field v-model="newAirValue" label="Air Value" type="number"></v-text-field>
+            </v-form>
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -62,11 +72,13 @@
           </v-col>
           <v-col v-if="!isEditing">{{ sensor.waterValue ? sensor.waterValue : "None"}}</v-col>
           <v-col v-else>
-            <input v-model="newWaterValue" type="text" :placeholder="sensor.waterValue" />
+            <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+              <v-text-field v-model="newWaterValue" label="Water Value" type="number"></v-text-field>
+            </v-form>
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -78,7 +90,14 @@
 
           <v-col v-if="!isEditing">{{ sensor.version ? sensor.version : "None"}}</v-col>
           <v-col v-else>
-            <input v-model="newVersion" type="text" :placeholder="sensor.version" />
+            <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+              <v-text-field
+                v-model="newVersion"
+                :rules="newVersionRules"
+                :counter="255"
+                label="Version"
+              ></v-text-field>
+            </v-form>
           </v-col>
         </v-row>
       </v-container>
@@ -100,7 +119,8 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text @click="deleteSensor">DELETE</v-btn>
-            <v-btn text @click="saveSensor" v-if="isEditing">SAVE</v-btn>
+            <v-btn text @click="saveSensor" v-if="isEditing && changesMade" :disabled="!valid">SAVE</v-btn>
+            <v-btn text @click="cancelEdit" v-if="isEditing">CANCEL</v-btn>
             <v-btn text @click="editSensor" v-else>EDIT</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -115,6 +135,8 @@ export default {
   data: () => ({
     show: false,
     isEditing: false,
+    changesMade: false,
+    valid: true,
     newLabel: "",
     newPlant: null,
     newAirValue: null,
@@ -126,6 +148,12 @@ export default {
     tooltipVersion: "Sensor Version",
     iconColor: "black",
     iconSize: "medium",
+    newLabelRules: [
+        (v) => v.length <= 255 || "Label must be less than 255 characters",
+      ],
+    newVersionRules: [
+      (v) => v.length <= 255 || "The version must be less than 255 characters",
+    ],
   }),
 
   props: ["sensor"],
@@ -137,6 +165,27 @@ export default {
 
     plants() {
       return this.$store.getters.plants;
+    },
+  },
+
+  watch: {
+    newLabel() {
+      this.changesMade = true;
+    },
+
+    newPlant() {
+      this.changesMade = true;
+    },
+
+    newAirValue() {
+      this.changesMade = true;
+    },
+
+    newWaterValue() {
+      this.changesMade = true;
+    },
+    newVersion() {
+      this.changesMade = true;
     },
   },
 
@@ -154,14 +203,26 @@ export default {
       this.isEditing = true;
     },
 
+    cancelEdit() {
+      this.isEditing = false;
+      this.newLabel = "";
+      this.newPlant = null;
+      this.newAirValue = null;
+      this.newWaterValue = null;
+      this.newVersion = "";
+      this.$refs.form.resetValidation();
+    },
+
     async saveSensor() {
       try {
         this.isEditing = !this.isEditing;
 
         /* Remove the plant from the sensor it's currectly associated with */
-        var sensorToDetach = this.$store.getters.sensorByPlantID(
-          this.newPlant.id
-        );
+        if (this.newPlant) {
+          var sensorToDetach = this.$store.getters.sensorByPlantID(
+            this.newPlant.id
+          );
+        }
 
         if (sensorToDetach) {
           const responseDetach = await window.axios.patch(
@@ -185,7 +246,7 @@ export default {
           {
             id: this.sensor.id,
             label: this.newLabel ? this.newLabel : this.sensor.label,
-            plantID: this.newPlant.id ? this.newPlant.id : this.sensor.plantID,
+            plantID: this.newPlant ? this.newPlant.id : this.sensor.plantID,
             airValue: this.newAirValue
               ? this.newAirValue
               : this.sensor.airValue,

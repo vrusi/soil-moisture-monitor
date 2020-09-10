@@ -26,8 +26,6 @@
             :placeholder="'None'"
             label="Choose a plant to monitor"
             v-model="plant"
-            dense
-            outlined
             return-object
           ></v-select>
 

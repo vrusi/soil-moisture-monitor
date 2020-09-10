@@ -3,15 +3,30 @@
     <v-card class="mx-auto">
       <v-img src="https://image.flaticon.com/icons/png/512/628/628283.png"></v-img>
 
-      <v-card-title v-if="!isEditing">{{ plant.name ? plant.name : "None"}}</v-card-title>
-      <v-card-title v-else>
-        <input v-model="newName" type="text" :placeholder="plant.name" />
-      </v-card-title>
-
-      <v-card-subtitle>PLANT STATUS</v-card-subtitle>
-
       <v-container>
-        <v-row>
+        <v-row align="center">
+          <v-col>
+            <v-card-title v-if="!isEditing">{{ plant.name ? plant.name : "None"}}</v-card-title>
+            <v-card-title v-else>
+              <v-form style="width: 100%">
+                <v-text-field
+                  v-model="newName"
+                  :rules="newNameRules"
+                  :counter="255"
+                  label="New Plant Name"
+                ></v-text-field>
+              </v-form>
+            </v-card-title>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col>
+            <v-card-subtitle>PLANT STATUS</v-card-subtitle>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -30,7 +45,7 @@
           <v-col>{{ plant.lastMoisturePercentage ? plant.lastMoisturePercentage : 'None' }}</v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -42,7 +57,7 @@
           <v-col>{{ plant.lastMoistureValue ? plant.lastMoistureValue : 'None'}}</v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col cols="2" style="text-align: center;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -75,8 +90,6 @@
               :placeholder="sensor ? sensor.label : 'None'"
               label="Change sensor"
               v-model="newSensor"
-              dense
-              outlined
               return-object
             ></v-select>
           </v-col>
@@ -95,14 +108,22 @@
         <div v-show="show">
           <v-card-text v-if="!isEditing" style="text-align: justify;">{{ plant.conditions }}</v-card-text>
           <v-card-text v-else>
-            <input v-model="newConditions" type="text" :placeholder="plant.conditions" />
+            <v-form :lazy-validation="true" v-model="valid" ref="form">
+              <v-text-field
+                v-model="newConditions"
+                :rules="newConditionsRules"
+                :counter="255"
+                label="New Conditions"
+              ></v-text-field>
+            </v-form>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text @click="deletePlant">DELETE</v-btn>
-            <v-btn text @click="savePlant" v-if="isEditing">SAVE</v-btn>
-            <v-btn text @click="editPlant" v-else>EDIT</v-btn>
+            <v-btn text @click="savePlant" v-if="isEditing && changesMade" :disabled="!valid">SAVE</v-btn>
+            <v-btn text @click="cancelEdit" v-if="isEditing">CANCEL</v-btn>
+            <v-btn text @click="editPlant" v-if="!isEditing">EDIT</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </div>
@@ -116,6 +137,7 @@ export default {
   data: () => ({
     show: false,
     isEditing: false,
+    changesMade: false,
     newName: "",
     newSensor: null,
     newConditions: "",
@@ -124,6 +146,13 @@ export default {
     tooltipPercentage: "Current soil moisture percentage",
     tooltipValue: "Current soil moisture capacitance value",
     tooltipSensor: "The sensor currently monitoring this plant",
+    newConditionsRules: [
+      (v) => v.length <= 255 || "Conditions must be less than 255 characters",
+    ],
+    newNameRules: [
+      (v) => v.length <= 255 || "Plant name must be less than 255 characters",
+    ],
+    valid: false,
   }),
 
   props: ["plant"],
@@ -134,6 +163,20 @@ export default {
     },
     sensors() {
       return this.$store.getters.sensors;
+    },
+  },
+
+  watch: {
+    newName() {
+      this.changesMade = true;
+    },
+
+    newSensor() {
+      this.changesMade = true;
+    },
+
+    newConditions() {
+      this.changesMade = true;
     },
   },
 
@@ -151,8 +194,18 @@ export default {
       this.isEditing = true;
     },
 
+    cancelEdit() {
+      this.isEditing = false;
+      this.newName = "";
+      this.newSensor = null;
+      this.newConditions = "";
+      this.$refs.form.resetValidation();
+    },
+
     async savePlant() {
       try {
+        this.$refs.form.resetValidation();
+        this.changesMade = !this.changesMade;
         this.isEditing = !this.isEditing;
 
         const responsePlant = await window.axios.patch(
@@ -164,6 +217,9 @@ export default {
         );
 
         this.$store.commit("UPDATE_PLANT", responsePlant.data);
+
+        this.newName = "";
+        this.newConditions = "";
 
         if (this.newSensor == null) return;
 
@@ -204,6 +260,8 @@ export default {
         );
 
         this.$store.commit("UPDATE_SENSOR", responseAttach.data);
+
+        this.newSensor = null;
       } catch (error) {
         console.log(error);
       }

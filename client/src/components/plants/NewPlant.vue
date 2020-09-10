@@ -27,10 +27,8 @@
               :item-text="'label'"
               :item-value="'id'"
               :placeholder="'None'"
-              label="Set sensor"
+              label="Choose a sensor"
               v-model="sensor"
-              dense
-              outlined
               return-object
             ></v-select>
 
