@@ -17,9 +17,9 @@
 
           <v-text-field v-model="waterValue" label="Water Value" type="number"></v-text-field>
 
-          <v-text-field v-model="version" label="Sensor Version"></v-text-field>
+          <v-text-field v-model="version" label="Sensor Version" :counter="255"></v-text-field>
 
-          <v-text-field v-model="notes" label="Sensor Notes"></v-text-field>
+          <v-text-field v-model="notes" label="Sensor Notes" :counter="2048"></v-text-field>
 
 
           <v-select
