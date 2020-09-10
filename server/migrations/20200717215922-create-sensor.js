@@ -32,6 +32,9 @@ module.exports = {
       version: {
         type: Sequelize.STRING,
       },
+      notes: {
+        type: Sequelize.STRING(2048),
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

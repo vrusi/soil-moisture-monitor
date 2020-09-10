@@ -14,9 +14,11 @@ module.exports = (sequelize, DataTypes) => {
   Plant.init(
     {
       name: DataTypes.STRING,
-      conditions: DataTypes.STRING,
+      description: DataTypes.STRING(2048),
       lastMoistureValue: DataTypes.INTEGER,
       lastMoisturePercentage: DataTypes.INTEGER,
+      recommendedMoisturePercentage: DataTypes.INTEGER,
+      imagePath: DataTypes.STRING(2048),
     },
     {
       sequelize,

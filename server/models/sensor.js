@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       airValue: DataTypes.INTEGER,
       waterValue: DataTypes.INTEGER,
       version: DataTypes.STRING,
+      notes: DataTypes.STRING(2048),
     },
     {
       sequelize,
