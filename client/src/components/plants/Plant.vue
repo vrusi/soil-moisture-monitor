@@ -1,7 +1,9 @@
 <template>
   <div :id="plant.id" class="card">
     <v-card class="mx-auto">
-      <v-img :src="plant.imagePath ? plant.imagePath : 'https://image.flaticon.com/icons/png/512/628/628283.png'"></v-img>
+      <v-img
+        :src="plant.imagePath ? plant.imagePath : 'https://image.flaticon.com/icons/png/512/628/628283.png'"
+      ></v-img>
 
       <v-container>
         <v-row align="center">
@@ -13,7 +15,7 @@
                   v-model="newName"
                   :rules="newNameRules"
                   :counter="255"
-                  label="New Plant Name"
+                  label="Plant Name"
                 ></v-text-field>
               </v-form>
             </v-card-title>
@@ -106,14 +108,27 @@
 
       <v-expand-transition>
         <div v-show="show">
+          <v-card-text
+            v-if="!isEditing"
+          >Recommended moisture: {{ plant.recommendedMoisturePercentage ? plant.recommendedMoisturePercentage + ' %' : 'None' }}</v-card-text>
+          <v-card-text v-else>
+            <v-form>
+              <v-text-field
+                v-model="newRecommendedMoisturePercentage"
+                type="number"
+                label="Recommended Moisture Percentage"
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
+
           <v-card-text v-if="!isEditing" style="text-align: justify;">{{ plant.description }}</v-card-text>
           <v-card-text v-else>
-            <v-form :lazy-validation="true" v-model="valid" ref="form">
+            <v-form lazy-validation v-model="valid" ref="form">
               <v-text-field
                 v-model="newDescription"
                 :rules="newDescriptionRules"
-                :counter="255"
-                label="New Description"
+                :counter="2048"
+                label="Description"
               ></v-text-field>
             </v-form>
           </v-card-text>
@@ -122,7 +137,7 @@
             <v-spacer></v-spacer>
             <v-btn text @click="deletePlant">DELETE</v-btn>
             <v-btn text @click="savePlant" v-if="isEditing && changesMade" :disabled="!valid">SAVE</v-btn>
-            <v-btn text @click="resetFormData" v-if="isEditing">CANCEL</v-btn>
+            <v-btn text @click="cancelEdit" v-if="isEditing">CANCEL</v-btn>
             <v-btn text @click="editPlant" v-if="!isEditing">EDIT</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -141,13 +156,15 @@ export default {
       newName: "",
       newSensor: null,
       newDescription: "",
+      newRecommendedMoisturePercentage: null,
       iconColor: "black",
       iconSize: "medium",
       tooltipPercentage: "Current soil moisture percentage",
       tooltipValue: "Current soil moisture capacitance value",
       tooltipSensor: "The sensor currently monitoring this plant",
       newDescriptionRules: [
-        (v) => v.length <= 2048 || "Description must be less than 2048 characters",
+        (v) =>
+          v.length <= 2048 || "Description must be less than 2048 characters",
       ],
       newNameRules: [
         (v) => v.length <= 255 || "Plant name must be less than 255 characters",
@@ -170,7 +187,8 @@ export default {
       return !(
         this.newName === "" &&
         this.newSensor === null &&
-        this.newDescription === ""
+        this.newDescription === "" &&
+        this.newRecommendedMoisturePercentage === null
       );
     },
   },
@@ -180,6 +198,12 @@ export default {
       this.newName = "";
       this.newSensor = null;
       this.newDescription = "";
+      this.newRecommendedMoisturePercentage = null;
+    },
+
+    cancelEdit() {
+      this.resetFormData();
+      this.isEditing = false;
     },
 
     async deletePlant() {
@@ -202,8 +226,14 @@ export default {
         const responsePlant = await window.axios.patch(
           "/plants/" + this.plant.id,
           {
-            newName: this.newName,
-            newDescription: this.newDescription,
+            newName: this.newName ? this.newName : this.plant.name,
+            newDescription: this.newDescription
+              ? this.newDescription
+              : this.plant.description,
+            newRecommendedMoisturePercentage: this
+              .newRecommendedMoisturePercentage
+              ? this.newRecommendedMoisturePercentage
+              : this.plant.recommendedMoisturePercentage,
           }
         );
 
@@ -226,6 +256,7 @@ export default {
                 airValue: sensorToDetach.airValue,
                 waterValue: sensorToDetach.waterValue,
                 version: sensorToDetach.version,
+                notes: sensorToDetach.notes,
               }
             );
 
@@ -247,6 +278,7 @@ export default {
                 airValue: sensorToAttach.airValue,
                 waterValue: sensorToAttach.waterValue,
                 version: sensorToAttach.version,
+                notes: sensorToAttach.notes,
               }
             );
 
