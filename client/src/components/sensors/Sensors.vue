@@ -19,7 +19,7 @@
       <v-spacer></v-spacer>
     </v-row>
 
-    <hr />
+    <v-divider></v-divider>
 
     <v-row>
       <v-spacer></v-spacer>
