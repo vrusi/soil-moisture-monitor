@@ -9,7 +9,12 @@
       <v-container>
         <v-row>
           <v-col cols="2" style="text-align: center;">
-            <i class="fas fa-leaf"></i>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon :color="iconColor" :size="iconSize" dark v-bind="attrs" v-on="on">fa-leaf</v-icon>
+              </template>
+              <span>{{ tooltipPlant }}</span>
+            </v-tooltip>
           </v-col>
           <v-col v-if="!isEditing">
             <router-link v-if="plant" :to="'plants#' + this.sensor.plantID">
@@ -33,7 +38,12 @@
 
         <v-row>
           <v-col cols="2" style="text-align: center;">
-            <i class="fas fa-wind"></i>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon :color="iconColor" :size="iconSize" dark v-bind="attrs" v-on="on">fa-wind</v-icon>
+              </template>
+              <span>{{ tooltipAirValue }}</span>
+            </v-tooltip>
           </v-col>
           <v-col v-if="!isEditing">{{ sensor.airValue ? sensor.airValue : "None"}}</v-col>
           <v-col v-else>
@@ -43,7 +53,12 @@
 
         <v-row>
           <v-col cols="2" style="text-align: center;">
-            <i class="fas fa-water"></i>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon :color="iconColor" :size="iconSize" dark v-bind="attrs" v-on="on">fa-water</v-icon>
+              </template>
+              <span>{{ tooltipWaterValue }}</span>
+            </v-tooltip>
           </v-col>
           <v-col v-if="!isEditing">{{ sensor.waterValue ? sensor.waterValue : "None"}}</v-col>
           <v-col v-else>
@@ -53,7 +68,12 @@
 
         <v-row>
           <v-col cols="2" style="text-align: center;">
-            <i class="fas fa-info"></i>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon :color="iconColor" :size="iconSize" dark v-bind="attrs" v-on="on">fa-info</v-icon>
+              </template>
+              <span>{{ tooltipVersion }}</span>
+            </v-tooltip>
           </v-col>
 
           <v-col v-if="!isEditing">{{ sensor.version ? sensor.version : "None"}}</v-col>
@@ -100,6 +120,12 @@ export default {
     newAirValue: null,
     newWaterValue: null,
     newVersion: "",
+    tooltipPlant: "The plant this sensor is currently monitoring",
+    tooltipAirValue: "Air Value",
+    tooltipWaterValue: "Water Value",
+    tooltipVersion: "Sensor Version",
+    iconColor: "black",
+    iconSize: "medium",
   }),
 
   props: ["sensor"],
