@@ -1,10 +1,12 @@
 const state = {
-  sensors: []
+  sensors: [],
+  loading: true
 };
 
 const mutations = {
   SET_SENSORS(state, sensors) {
     state.sensors = sensors;
+    state.loading = false;
   },
 
   UPDATE_SENSOR(state, updatedSensor) {
@@ -38,6 +40,10 @@ const getters = {
 
   sensorLabelAlreadyExists: state => sensorLabel => {
     return state.sensors.find(sensor => sensor.label === sensorLabel);
+  },
+  
+  sensorsLoading: state => {
+    return state.loading;
   }
 };
 

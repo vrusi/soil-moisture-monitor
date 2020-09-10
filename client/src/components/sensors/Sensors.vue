@@ -2,7 +2,12 @@
   <v-container>
     <v-row>
       <v-spacer></v-spacer>
-      <v-col>
+      <v-col v-if="!loaded">
+        <div class="text-center ma-12">
+          <v-progress-circular indeterminate color="green"></v-progress-circular>
+        </div>
+      </v-col>
+      <v-col v-else>
         <app-sensor
           v-for="sensor in sensors"
           :key="sensor.id"
@@ -49,6 +54,13 @@ export default {
   computed: {
     sensors() {
       return this.$store.getters.sensors;
+    },
+
+    loaded() {
+      return (
+        !this.$store.getters.plantsLoading &&
+        !this.$store.getters.sensorsLoading
+      );
     },
   },
 };

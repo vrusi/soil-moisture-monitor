@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     plants() {
-      return this.$store.getters.plants;
+      return this.$store.getters.plants || [];
     },
   },
   methods: {

@@ -1,10 +1,12 @@
 const state = {
-  plants: []
+  plants: [],
+  loading: true
 };
 
 const mutations = {
   SET_PLANTS(state, plants) {
     state.plants = plants;
+    state.loading = false;
   },
 
   UPDATE_PLANT(state, updatedPlant) {
@@ -30,6 +32,10 @@ const getters = {
 
   plantByID: state => id => {
     return state.plants.find(plant => plant.id === id);
+  },
+
+  plantsLoading: state => {
+    return state.loading;
   }
 };
 

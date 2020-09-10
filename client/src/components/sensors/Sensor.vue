@@ -164,7 +164,7 @@ export default {
     },
 
     plants() {
-      return this.$store.getters.plants;
+      return this.$store.getters.plants || [];
     },
   },
 
