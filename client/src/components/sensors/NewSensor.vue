@@ -19,6 +19,9 @@
 
           <v-text-field v-model="version" label="Sensor Version"></v-text-field>
 
+          <v-text-field v-model="notes" label="Sensor Notes"></v-text-field>
+
+
           <v-select
             :items="[...plants, 'None']"
             :item-text="'name'"
@@ -46,6 +49,7 @@ export default {
       airValue: null,
       waterValue: null,
       version: "",
+      notes: "",
       labelRules: [
         (v) => !!v || "Label is required",
         (v) => v.length <= 255 || "Label must be less than 255 characters",
@@ -53,14 +57,29 @@ export default {
           !this.$store.getters.sensorLabelAlreadyExists(v) ||
           "This label is already taken",
       ],
+      notesRules: [
+        (v) =>
+          v.length <= 2048 || "The notes must be less than 2048 characters",
+      ],
     };
   },
+
   computed: {
     plants() {
       return this.$store.getters.plants || [];
     },
   },
+
   methods: {
+    resetFormData() {
+        this.plant = null;
+        this.label = "";
+        this.airValue = null;
+        this.waterValue = null;
+        this.version = "";
+        this.notes = "";
+    },
+    
     async addSensor() {
       try {
         if (this.plant) {
@@ -79,6 +98,7 @@ export default {
               airValue: sensorAlreadyAttached.airValue,
               waterValue: sensorAlreadyAttached.waterValue,
               version: sensorAlreadyAttached.version,
+              notes: sensorAlreadyAttached.notes,
             }
           );
 
@@ -91,15 +111,12 @@ export default {
           airValue: this.airValue,
           waterValue: this.waterValue,
           version: this.version,
+          notes: this.notes,
         });
 
         this.$store.commit("ADD_SENSOR", response.data);
 
-        this.plant = null;
-        this.label = "";
-        this.airValue = null;
-        this.waterValue = null;
-        this.version = "";
+        this.resetFormData();
         this.$refs.form.resetValidation();
       } catch (error) {
         console.log(error);

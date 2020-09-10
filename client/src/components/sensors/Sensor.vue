@@ -1,9 +1,13 @@
 <template>
   <div :id="sensor.id" class="card">
     <v-card class="mx-auto">
-      <v-card-title v-if="!isEditing">{{ sensor.label ? sensor.label : "None" }}</v-card-title>
+      <v-card-title
+        style="font-size: 2rem; padding: 30px"
+        v-if="!isEditing"
+      >{{ sensor.label ? sensor.label : "None" }}</v-card-title>
+
       <v-card-title v-else>
-        <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+        <v-form ref="form" lazy-validation v-model="valid" style="width: 100%;">
           <v-text-field
             v-model="newLabel"
             :rules="newLabelRules"
@@ -12,6 +16,8 @@
           ></v-text-field>
         </v-form>
       </v-card-title>
+
+      <v-divider style="margin: 0px;"></v-divider>
 
       <v-container>
         <v-row align="center">
@@ -23,14 +29,16 @@
               <span>{{ tooltipPlant }}</span>
             </v-tooltip>
           </v-col>
+
           <v-col v-if="!isEditing">
             <router-link v-if="plant" :to="'plants#' + this.sensor.plantID">
               <a>{{ plant.name }}</a>
             </router-link>
             <span v-if="!plant">None</span>
           </v-col>
+
           <v-col v-else>
-            <v-form ref="form" :lazy-validation="true" v-model="valid">
+            <v-form ref="form" lazy-validation v-model="valid">
               <v-select
                 :items="[...plants, 'None']"
                 :item-text="'name'"
@@ -55,7 +63,7 @@
           </v-col>
           <v-col v-if="!isEditing">{{ sensor.airValue ? sensor.airValue : "None"}}</v-col>
           <v-col v-else>
-            <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+            <v-form ref="form" lazy-validation v-model="valid" style="width: 100%;">
               <v-text-field v-model="newAirValue" label="Air Value" type="number"></v-text-field>
             </v-form>
           </v-col>
@@ -72,7 +80,7 @@
           </v-col>
           <v-col v-if="!isEditing">{{ sensor.waterValue ? sensor.waterValue : "None"}}</v-col>
           <v-col v-else>
-            <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+            <v-form ref="form" lazy-validation v-model="valid" style="width: 100%;">
               <v-text-field v-model="newWaterValue" label="Water Value" type="number"></v-text-field>
             </v-form>
           </v-col>
@@ -90,7 +98,7 @@
 
           <v-col v-if="!isEditing">{{ sensor.version ? sensor.version : "None"}}</v-col>
           <v-col v-else>
-            <v-form ref="form" :lazy-validation="true" v-model="valid" style="width: 100%;">
+            <v-form ref="form" lazy-validation v-model="valid" style="width: 100%;">
               <v-text-field
                 v-model="newVersion"
                 :rules="newVersionRules"
@@ -112,9 +120,28 @@
 
       <v-expand-transition>
         <div v-show="show">
-          <v-card-text
-            style="text-align: justify;"
-          >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sagittis velit vel accumsan viverra. Nunc ac dui ullamcorper, efficitur arcu a, consequat augue. Vestibulum vel laoreet est. Donec in facilisis enim, condimentum mollis massa. Mauris ullamcorper vehicula arcu, vel vehicula dui venenatis id.</v-card-text>
+          <v-container>
+            <v-spacer></v-spacer>
+            <v-row v-if="!isEditing">
+              <v-col>
+                <v-card-text style="text-align: justify;">{{ sensor.notes }}</v-card-text>
+              </v-col>
+            </v-row>
+
+            <v-row v-else>
+              <v-col>
+                <v-form ref="form" v-model="valid" lazy-validation style="width: 100%;">
+                  <v-text-field
+                    v-model="newNotes"
+                    :rules="newNotesRules"
+                    :counter="2048"
+                    label="Notes"
+                  ></v-text-field>
+                </v-form>
+              </v-col>
+            </v-row>
+            <v-spacer></v-spacer>
+          </v-container>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -142,10 +169,11 @@ export default {
       newAirValue: null,
       newWaterValue: null,
       newVersion: "",
+      newNotes: "",
       tooltipPlant: "The plant this sensor is currently monitoring",
-      tooltipAirValue: "Air Value",
-      tooltipWaterValue: "Water Value",
-      tooltipVersion: "Sensor Version",
+      tooltipAirValue: "The captured capacitance value in air",
+      tooltipWaterValue: "The captured capacitance value in water",
+      tooltipVersion: "Sensor version",
       iconColor: "black",
       iconSize: "medium",
       newLabelRules: [
@@ -157,6 +185,10 @@ export default {
       newVersionRules: [
         (v) =>
           v.length <= 255 || "The version must be less than 255 characters",
+      ],
+      newNotesRules: [
+        (v) =>
+          v.length <= 2048 || "The notes must be less than 2048 characters",
       ],
     };
   },
@@ -178,7 +210,8 @@ export default {
         this.newPlant === null &&
         this.newAirValue === null &&
         this.newWaterValue === null &&
-        this.newVersion === ""
+        this.newVersion === "" &&
+        this.newNotes === ""
       );
     },
   },
@@ -190,6 +223,7 @@ export default {
       this.newAirValue = null;
       this.newWaterValue = null;
       this.newVersion = "";
+      this.newNotes = "";
     },
 
     async deleteSensor() {
@@ -232,6 +266,7 @@ export default {
               airValue: sensorToDetach.airValue,
               waterValue: sensorToDetach.waterValue,
               version: sensorToDetach.version,
+              notes: sensorToDetach.notes,
             }
           );
 
@@ -252,6 +287,7 @@ export default {
               ? this.newWaterValue
               : this.sensor.waterValue,
             version: this.newVersion ? this.newVersion : this.sensor.version,
+            notes: this.newNotes ? this.newNotes : this.sensor.notes,
           }
         );
 

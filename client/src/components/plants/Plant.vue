@@ -1,7 +1,7 @@
 <template>
   <div :id="plant.id" class="card">
     <v-card class="mx-auto">
-      <v-img src="https://image.flaticon.com/icons/png/512/628/628283.png"></v-img>
+      <v-img :src="plant.imagePath ? plant.imagePath : 'https://image.flaticon.com/icons/png/512/628/628283.png'"></v-img>
 
       <v-container>
         <v-row align="center">
@@ -106,14 +106,14 @@
 
       <v-expand-transition>
         <div v-show="show">
-          <v-card-text v-if="!isEditing" style="text-align: justify;">{{ plant.conditions }}</v-card-text>
+          <v-card-text v-if="!isEditing" style="text-align: justify;">{{ plant.description }}</v-card-text>
           <v-card-text v-else>
             <v-form :lazy-validation="true" v-model="valid" ref="form">
               <v-text-field
-                v-model="newConditions"
-                :rules="newConditionsRules"
+                v-model="newDescription"
+                :rules="newDescriptionRules"
                 :counter="255"
-                label="New Conditions"
+                label="New Description"
               ></v-text-field>
             </v-form>
           </v-card-text>
@@ -140,14 +140,14 @@ export default {
       isEditing: false,
       newName: "",
       newSensor: null,
-      newConditions: "",
+      newDescription: "",
       iconColor: "black",
       iconSize: "medium",
       tooltipPercentage: "Current soil moisture percentage",
       tooltipValue: "Current soil moisture capacitance value",
       tooltipSensor: "The sensor currently monitoring this plant",
-      newConditionsRules: [
-        (v) => v.length <= 255 || "Conditions must be less than 255 characters",
+      newDescriptionRules: [
+        (v) => v.length <= 2048 || "Description must be less than 2048 characters",
       ],
       newNameRules: [
         (v) => v.length <= 255 || "Plant name must be less than 255 characters",
@@ -170,7 +170,7 @@ export default {
       return !(
         this.newName === "" &&
         this.newSensor === null &&
-        this.newConditions === ""
+        this.newDescription === ""
       );
     },
   },
@@ -179,7 +179,7 @@ export default {
     resetFormData() {
       this.newName = "";
       this.newSensor = null;
-      this.newConditions = "";
+      this.newDescription = "";
     },
 
     async deletePlant() {
@@ -203,7 +203,7 @@ export default {
           "/plants/" + this.plant.id,
           {
             newName: this.newName,
-            newConditions: this.newConditions,
+            newDescription: this.newDescription,
           }
         );
 
