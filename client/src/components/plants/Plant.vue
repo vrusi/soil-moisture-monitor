@@ -122,7 +122,7 @@
             <v-spacer></v-spacer>
             <v-btn text @click="deletePlant">DELETE</v-btn>
             <v-btn text @click="savePlant" v-if="isEditing && changesMade" :disabled="!valid">SAVE</v-btn>
-            <v-btn text @click="cancelEdit" v-if="isEditing">CANCEL</v-btn>
+            <v-btn text @click="resetFormData" v-if="isEditing">CANCEL</v-btn>
             <v-btn text @click="editPlant" v-if="!isEditing">EDIT</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -134,26 +134,27 @@
 
 <script>
 export default {
-  data: () => ({
-    show: false,
-    isEditing: false,
-    changesMade: false,
-    newName: "",
-    newSensor: null,
-    newConditions: "",
-    iconColor: "black",
-    iconSize: "medium",
-    tooltipPercentage: "Current soil moisture percentage",
-    tooltipValue: "Current soil moisture capacitance value",
-    tooltipSensor: "The sensor currently monitoring this plant",
-    newConditionsRules: [
-      (v) => v.length <= 255 || "Conditions must be less than 255 characters",
-    ],
-    newNameRules: [
-      (v) => v.length <= 255 || "Plant name must be less than 255 characters",
-    ],
-    valid: false,
-  }),
+  data() {
+    return {
+      show: false,
+      isEditing: false,
+      newName: "",
+      newSensor: null,
+      newConditions: "",
+      iconColor: "black",
+      iconSize: "medium",
+      tooltipPercentage: "Current soil moisture percentage",
+      tooltipValue: "Current soil moisture capacitance value",
+      tooltipSensor: "The sensor currently monitoring this plant",
+      newConditionsRules: [
+        (v) => v.length <= 255 || "Conditions must be less than 255 characters",
+      ],
+      newNameRules: [
+        (v) => v.length <= 255 || "Plant name must be less than 255 characters",
+      ],
+      valid: false,
+    };
+  },
 
   props: ["plant"],
 
@@ -164,23 +165,23 @@ export default {
     sensors() {
       return this.$store.getters.sensors;
     },
-  },
 
-  watch: {
-    newName() {
-      this.changesMade = true;
-    },
-
-    newSensor() {
-      this.changesMade = true;
-    },
-
-    newConditions() {
-      this.changesMade = true;
+    changesMade() {
+      return !(
+        this.newName === "" &&
+        this.newSensor === null &&
+        this.newConditions === ""
+      );
     },
   },
 
   methods: {
+    resetFormData() {
+      this.newName = "";
+      this.newSensor = null;
+      this.newConditions = "";
+    },
+
     async deletePlant() {
       try {
         await window.axios.delete("/plants/" + this.plant.id);
@@ -194,18 +195,8 @@ export default {
       this.isEditing = true;
     },
 
-    cancelEdit() {
-      this.isEditing = false;
-      this.newName = "";
-      this.newSensor = null;
-      this.newConditions = "";
-      this.$refs.form.resetValidation();
-    },
-
     async savePlant() {
       try {
-        this.$refs.form.resetValidation();
-        this.changesMade = !this.changesMade;
         this.isEditing = !this.isEditing;
 
         const responsePlant = await window.axios.patch(
@@ -218,50 +209,52 @@ export default {
 
         this.$store.commit("UPDATE_PLANT", responsePlant.data);
 
-        this.newName = "";
-        this.newConditions = "";
-
-        if (this.newSensor == null) return;
-
-        /* Detach the plant from the currently attached sensor */
-        var sensorToDetach = this.$store.getters.sensorByPlantID(this.plant.id);
-
-        if (sensorToDetach) {
-          const responseDetach = await window.axios.patch(
-            "/sensors/" + sensorToDetach.id,
-            {
-              id: sensorToDetach.id,
-              label: sensorToDetach.label,
-              plantID: null,
-              airValue: sensorToDetach.airValue,
-              waterValue: sensorToDetach.waterValue,
-              version: sensorToDetach.version,
-            }
+        /* If a new sensor was picked */
+        if (this.newSensor != null) {
+          /* Detach the plant from the currently attached sensor */
+          var sensorToDetach = this.$store.getters.sensorByPlantID(
+            this.plant.id
           );
 
-          this.$store.commit("UPDATE_SENSOR", responseDetach.data);
+          if (sensorToDetach) {
+            const responseDetach = await window.axios.patch(
+              "/sensors/" + sensorToDetach.id,
+              {
+                id: sensorToDetach.id,
+                label: sensorToDetach.label,
+                plantID: null,
+                airValue: sensorToDetach.airValue,
+                waterValue: sensorToDetach.waterValue,
+                version: sensorToDetach.version,
+              }
+            );
+
+            this.$store.commit("UPDATE_SENSOR", responseDetach.data);
+          }
+
+          /* Attach a new sensor if it was selected */
+          if (this.newSensor != "None") {
+            var sensorToAttach = this.$store.getters.sensorByID(
+              this.newSensor.id
+            );
+
+            const responseAttach = await window.axios.patch(
+              "/sensors/" + sensorToAttach.id,
+              {
+                id: sensorToAttach.id,
+                label: sensorToAttach.label,
+                plantID: this.plant.id,
+                airValue: sensorToAttach.airValue,
+                waterValue: sensorToAttach.waterValue,
+                version: sensorToAttach.version,
+              }
+            );
+
+            this.$store.commit("UPDATE_SENSOR", responseAttach.data);
+          }
         }
 
-        /* Attach a new sensor if it was selected */
-        if (this.newSensor == "None") return;
-
-        var sensorToAttach = this.$store.getters.sensorByID(this.newSensor.id);
-
-        const responseAttach = await window.axios.patch(
-          "/sensors/" + sensorToAttach.id,
-          {
-            id: sensorToAttach.id,
-            label: sensorToAttach.label,
-            plantID: this.plant.id,
-            airValue: sensorToAttach.airValue,
-            waterValue: sensorToAttach.waterValue,
-            version: sensorToAttach.version,
-          }
-        );
-
-        this.$store.commit("UPDATE_SENSOR", responseAttach.data);
-
-        this.newSensor = null;
+        this.resetFormData();
       } catch (error) {
         console.log(error);
       }

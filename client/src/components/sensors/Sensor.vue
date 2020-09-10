@@ -132,29 +132,34 @@
 
 <script>
 export default {
-  data: () => ({
-    show: false,
-    isEditing: false,
-    changesMade: false,
-    valid: true,
-    newLabel: "",
-    newPlant: null,
-    newAirValue: null,
-    newWaterValue: null,
-    newVersion: "",
-    tooltipPlant: "The plant this sensor is currently monitoring",
-    tooltipAirValue: "Air Value",
-    tooltipWaterValue: "Water Value",
-    tooltipVersion: "Sensor Version",
-    iconColor: "black",
-    iconSize: "medium",
-    newLabelRules: [
+  data() {
+    return {
+      show: false,
+      isEditing: false,
+      valid: true,
+      newLabel: "",
+      newPlant: null,
+      newAirValue: null,
+      newWaterValue: null,
+      newVersion: "",
+      tooltipPlant: "The plant this sensor is currently monitoring",
+      tooltipAirValue: "Air Value",
+      tooltipWaterValue: "Water Value",
+      tooltipVersion: "Sensor Version",
+      iconColor: "black",
+      iconSize: "medium",
+      newLabelRules: [
         (v) => v.length <= 255 || "Label must be less than 255 characters",
+        (v) =>
+          !this.$store.getters.sensorLabelAlreadyExists(v) ||
+          "This label is already taken",
       ],
-    newVersionRules: [
-      (v) => v.length <= 255 || "The version must be less than 255 characters",
-    ],
-  }),
+      newVersionRules: [
+        (v) =>
+          v.length <= 255 || "The version must be less than 255 characters",
+      ],
+    };
+  },
 
   props: ["sensor"],
 
@@ -166,30 +171,27 @@ export default {
     plants() {
       return this.$store.getters.plants || [];
     },
-  },
 
-  watch: {
-    newLabel() {
-      this.changesMade = true;
-    },
-
-    newPlant() {
-      this.changesMade = true;
-    },
-
-    newAirValue() {
-      this.changesMade = true;
-    },
-
-    newWaterValue() {
-      this.changesMade = true;
-    },
-    newVersion() {
-      this.changesMade = true;
+    changesMade() {
+      return !(
+        this.newLabel === "" &&
+        this.newPlant === null &&
+        this.newAirValue === null &&
+        this.newWaterValue === null &&
+        this.newVersion === ""
+      );
     },
   },
 
   methods: {
+    resetFormData() {
+      this.newLabel = "";
+      this.newPlant = null;
+      this.newAirValue = null;
+      this.newWaterValue = null;
+      this.newVersion = "";
+    },
+
     async deleteSensor() {
       try {
         await window.axios.delete("/sensors/" + this.sensor.id);
@@ -205,11 +207,7 @@ export default {
 
     cancelEdit() {
       this.isEditing = false;
-      this.newLabel = "";
-      this.newPlant = null;
-      this.newAirValue = null;
-      this.newWaterValue = null;
-      this.newVersion = "";
+      this.resetFormData();
       this.$refs.form.resetValidation();
     },
 
@@ -258,6 +256,8 @@ export default {
         );
 
         this.$store.commit("UPDATE_SENSOR", responseAttach.data);
+
+        this.resetFormData();
       } catch (error) {
         console.log(error);
       }
