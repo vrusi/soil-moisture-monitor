@@ -7,7 +7,9 @@ exports.create = async function (req, res) {
   try {
     const plant = await Plant.create({
       name: req.body.name,
-      conditions: req.body.conditions,
+      description: req.body.description,
+      recommendedMoisturePercentage: req.body.recommendedMoisturePercentage,
+      imagePath: req.body.imagePath,
     });
 
     const sensor = await Sensor.findByPk(req.body.sensorID);
@@ -47,7 +49,13 @@ exports.update = async function (req, res) {
 
     if (req.body.newName) plant.name = req.body.newName;
 
-    if (req.body.newConditions) plant.conditions = req.body.newConditions;
+    if (req.body.newDescription) plant.description = req.body.newDescription;
+
+    if (req.body.newRecommendedMoisturePercentage)
+      plant.recommendedMoisturePercentage =
+        req.body.newRecommendedMoisturePercentage;
+
+    if (req.body.newImagePath) plant.imagePath = req.body.newImagePath;
 
     if (req.body.newSensorID) {
       plant.setSensor(null);
