@@ -10,8 +10,6 @@
 
       <v-container>
         <v-row align="center">
-
-
           <v-col>
             <v-form v-if="isEditing" style="width: 100%; padding: 0px 16px;">
               <v-text-field
@@ -22,13 +20,10 @@
               ></v-text-field>
             </v-form>
           </v-col>
-
         </v-row>
 
         <v-row align="center">
-
           <v-col>
-
             <v-card-title
               v-if="!isEditing"
               style="padding-bottom: 0px;"
@@ -44,7 +39,6 @@
                 ></v-text-field>
               </v-form>
             </v-card-title>
-
           </v-col>
         </v-row>
 
