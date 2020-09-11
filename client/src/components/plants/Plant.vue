@@ -8,20 +8,33 @@
         :src="plant.imagePath ? plant.imagePath : 'https://image.flaticon.com/icons/png/512/628/628283.png'"
       ></v-img>
 
-      <v-form v-if="isEditing">
-        <v-text-field
-          v-model="newImagePath"
-          :rules="newImagePathRules"
-          :counter="2048"
-          label="New Image Path"
-        ></v-text-field>
-      </v-form>
-
       <v-container>
         <v-row align="center">
+
+
           <v-col>
-            <v-card-title v-if="!isEditing">{{ plant.name ? plant.name : "None"}}</v-card-title>
-            <v-card-title v-else>
+            <v-form v-if="isEditing" style="width: 100%; padding: 0px 16px;">
+              <v-text-field
+                v-model="newImagePath"
+                :rules="newImagePathRules"
+                :counter="2048"
+                label="New Image Path"
+              ></v-text-field>
+            </v-form>
+          </v-col>
+
+        </v-row>
+
+        <v-row align="center">
+
+          <v-col>
+
+            <v-card-title
+              v-if="!isEditing"
+              style="padding-bottom: 0px;"
+            >{{ plant.name ? plant.name : "None"}}</v-card-title>
+
+            <v-card-title v-else style="padding: 0px 16px;">
               <v-form style="width: 100%">
                 <v-text-field
                   v-model="newName"
@@ -31,12 +44,15 @@
                 ></v-text-field>
               </v-form>
             </v-card-title>
+
           </v-col>
         </v-row>
 
         <v-row align="center">
           <v-col>
-            <v-card-subtitle>PLANT STATUS</v-card-subtitle>
+            <v-card-subtitle
+              :style="'color: ' + plantStatus[1] + '; padding-top: 0px;'"
+            >{{ plantStatus[0] }}</v-card-subtitle>
           </v-col>
         </v-row>
 
@@ -124,7 +140,7 @@
             v-if="!isEditing"
           >Recommended moisture: {{ plant.recommendedMoisturePercentage ? plant.recommendedMoisturePercentage + ' %' : 'None' }}</v-card-text>
           <v-card-text v-else>
-            <v-form>
+            <v-form style="padding: 0px 16px;">
               <v-text-field
                 v-model="newRecommendedMoisturePercentage"
                 type="number"
@@ -135,7 +151,7 @@
 
           <v-card-text v-if="!isEditing" style="text-align: justify;">{{ plant.description }}</v-card-text>
           <v-card-text v-else>
-            <v-form lazy-validation v-model="valid" ref="form">
+            <v-form lazy-validation v-model="valid" ref="form" style="padding: 0px 16px;">
               <v-text-field
                 v-model="newDescription"
                 :rules="newDescriptionRules"
@@ -208,6 +224,29 @@ export default {
         this.newRecommendedMoisturePercentage === null &&
         this.newImagePath === ""
       );
+    },
+
+    plantStatus() {
+      var current = this.plant.lastMoisturePercentage;
+      var recommended = this.plant.recommendedMoisturePercentage;
+
+      if (!current || !recommended) {
+        return ["Unknown", "gray"];
+      }
+
+      if (current >= recommended - 5 && current <= recommended + 5) {
+        return ["Great", "green"];
+      } else if (current >= recommended - 10 && current <= recommended + 10) {
+        return ["Very good", "mediumseagreen"];
+      } else if (current >= recommended - 20 && current <= recommended + 20) {
+        return ["Good", "olive"];
+      } else if (current >= recommended - 30 && current <= recommended + 30) {
+        return ["Not Good", "salmon"];
+      } else if (current >= recommended - 40 && current <= recommended + 40) {
+        return ["Bad", "indianred"];
+      } else {
+        return ["Very bad", "firebrick"];
+      }
     },
   },
 

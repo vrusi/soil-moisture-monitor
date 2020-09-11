@@ -62,6 +62,7 @@ export default {
       name: "",
       description: "",
       imagePath: "",
+      recommendedMoisturePercentage: null,
       nameRules: [
         (v) => !!v || "Name is required",
         (v) => v.length <= 255 || "Name must be less than 255 characters",
