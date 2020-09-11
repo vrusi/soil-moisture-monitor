@@ -1,21 +1,28 @@
 <template>
-  <nav class="navbar navbar-default" style="margin: 30px;">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <router-link to="/" class="navbar-brand">Soil Moisture Monitor</router-link>
+  <div>
+    <v-app-bar short bottom>
+      <div>
+        <router-link to="/" tag="span" style="cursor: pointer;">
+          <v-toolbar-title>Soil Moisture Monitor</v-toolbar-title>
+        </router-link>
       </div>
 
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <router-link to="/plants" activeClass="active" tag="li">
-            <a>Plants</a>
-          </router-link>
-          <router-link to="/sensors" activeClass="active" tag="li">
-            <a>Sensors</a>
-          </router-link>
-        </ul>
-        <strong class="navbar-text navbar-right">Overall Plant Health</strong>
-      </div>
-    </div>
-  </nav>
+      <v-toolbar-items style="width: 100%; margin: 10px">
+        <router-link to="/plants" tag="span">
+          <v-btn text block style="height: 100% !important; border-radius: 0px;">Plants</v-btn>
+        </router-link>
+
+        <router-link to="/sensors" tag="span">
+          <v-btn text block style="height: 100% !important; border-radius: 0px;">Sensors</v-btn>
+        </router-link>
+        <v-spacer></v-spacer>
+
+        <v-row style="align-content: center;">
+          <v-col style="text-align: end;">
+            <v-card-text>Overall Plant Health</v-card-text>
+          </v-col>
+        </v-row>
+      </v-toolbar-items>
+    </v-app-bar>
+  </div>
 </template>
