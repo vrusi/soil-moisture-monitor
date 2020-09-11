@@ -22,11 +22,18 @@
           ></v-text-field>
 
           <v-text-field
+            v-model="recommendedMoisturePercentage"
+            label="Recommended Moisture Percentage"
+            type="number"
+          ></v-text-field>
+
+          <v-text-field
             v-model="imagePath"
             :rules="imagePathRules"
             :counter="2048"
             label="Image Path"
           ></v-text-field>
+
           <br />
 
           <v-select
@@ -78,19 +85,26 @@ export default {
   },
 
   methods: {
+    resetFormData() {
+      this.sensor = null;
+      this.name = "";
+      this.description = "";
+      this.imagePath = "";
+    },
+
     async addPlant() {
       try {
         const response = await window.axios.post("/plants", {
           sensorID: this.sensor ? this.sensor.id : null,
           name: this.name,
           description: this.description,
+          recommendedMoisturePercentage: this.recommendedMoisturePercentage,
+          imagePath: this.imagePath,
         });
 
         this.$store.commit("ADD_PLANT", response.data);
 
-        this.sensor = null;
-        this.name = "";
-        this.description = "";
+        this.resetFormData();
         this.$refs.form.resetValidation();
       } catch (error) {
         console.log(error);

@@ -2,8 +2,20 @@
   <div :id="plant.id" class="card">
     <v-card class="mx-auto">
       <v-img
+        lazy-src
+        max-height="500"
+        max-width="600"
         :src="plant.imagePath ? plant.imagePath : 'https://image.flaticon.com/icons/png/512/628/628283.png'"
       ></v-img>
+
+      <v-form v-if="isEditing">
+        <v-text-field
+          v-model="newImagePath"
+          :rules="newImagePathRules"
+          :counter="2048"
+          label="New Image Path"
+        ></v-text-field>
+      </v-form>
 
       <v-container>
         <v-row align="center">
@@ -157,6 +169,7 @@ export default {
       newSensor: null,
       newDescription: "",
       newRecommendedMoisturePercentage: null,
+      newImagePath: "",
       iconColor: "black",
       iconSize: "medium",
       tooltipPercentage: "Current soil moisture percentage",
@@ -168,6 +181,10 @@ export default {
       ],
       newNameRules: [
         (v) => v.length <= 255 || "Plant name must be less than 255 characters",
+      ],
+      newImagePathRules: [
+        (v) =>
+          v.length <= 2048 || "Image path must be less than 2048 characters",
       ],
       valid: false,
     };
@@ -188,7 +205,8 @@ export default {
         this.newName === "" &&
         this.newSensor === null &&
         this.newDescription === "" &&
-        this.newRecommendedMoisturePercentage === null
+        this.newRecommendedMoisturePercentage === null &&
+        this.newImagePath === ""
       );
     },
   },
@@ -199,6 +217,7 @@ export default {
       this.newSensor = null;
       this.newDescription = "";
       this.newRecommendedMoisturePercentage = null;
+      this.newImagePath = "";
     },
 
     cancelEdit() {
@@ -234,6 +253,9 @@ export default {
               .newRecommendedMoisturePercentage
               ? this.newRecommendedMoisturePercentage
               : this.plant.recommendedMoisturePercentage,
+            newImagePath: this.newImagePath
+              ? this.newImagePath
+              : this.plant.imagePath,
           }
         );
 
