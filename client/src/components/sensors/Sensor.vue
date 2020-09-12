@@ -32,7 +32,7 @@
 
           <v-col v-if="!isEditing">
             <router-link v-if="plant" :to="'plants#' + this.sensor.plantID">
-              <a>{{ plant.name }}</a>
+              <a>{{ plant.name ? plant.name : "No name #" + plant.id }}</a>
             </router-link>
             <span v-if="!plant">None</span>
           </v-col>
@@ -250,7 +250,7 @@ export default {
         this.isEditing = !this.isEditing;
 
         /* Remove the plant from the sensor it's currectly associated with */
-        if (this.newPlant) {
+        if (this.newPlant && this.newPlant != "None") {
           var sensorToDetach = this.$store.getters.sensorByPlantID(
             this.newPlant.id
           );
@@ -273,13 +273,21 @@ export default {
           this.$store.commit("UPDATE_SENSOR", responseDetach.data);
         }
 
+        var newPlantID = null;
+
+        if (this.newPlant) {
+          if (this.newPlant != "None") {
+            newPlantID = this.newPlant.id;
+          }
+        }
+
         /* Attach the plant to the current sensor */
         const responseAttach = await window.axios.patch(
           "/sensors/" + this.sensor.id,
           {
             id: this.sensor.id,
             label: this.newLabel ? this.newLabel : this.sensor.label,
-            plantID: this.newPlant ? this.newPlant.id : this.sensor.plantID,
+            plantID: newPlantID,
             airValue: this.newAirValue
               ? this.newAirValue
               : this.sensor.airValue,
