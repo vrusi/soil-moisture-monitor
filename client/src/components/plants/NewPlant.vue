@@ -4,7 +4,7 @@
       <v-col>
         <h1 style="text-align: center;">Add a new plant</h1>
 
-        <v-form :lazy-validation="true" v-model="valid" ref="form">
+        <v-form v-model="valid" ref="form">
           <v-text-field
             v-model="name"
             :rules="nameRules"
