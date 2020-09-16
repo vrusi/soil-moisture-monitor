@@ -1,7 +1,9 @@
 var Plant = require("../models").Plant;
 var Sensor = require("../models").Sensor;
+var Measurement = require("../models").Measurement;
 
 Plant.Sensor = Plant.hasOne(Sensor, { foreignKey: "plantID" });
+Plant.Measurement = Plant.hasMany(Measurement, { foreignKey: "plantID" });
 
 exports.create = async function (req, res) {
   try {
@@ -10,6 +12,8 @@ exports.create = async function (req, res) {
       description: req.body.description,
       recommendedMoisturePercentage: req.body.recommendedMoisturePercentage,
       imagePath: req.body.imagePath,
+      lastMoistureValue: null,
+      lastMoisturePercentage: null,
     });
 
     const sensor = await Sensor.findByPk(req.body.sensorID);

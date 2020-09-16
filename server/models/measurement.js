@@ -17,10 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     sensorID: DataTypes.INTEGER,
     plantID: DataTypes.INTEGER,
     moistureValue: DataTypes.INTEGER,
-    moisturePercentage: DataTypes.INTEGER
+    moisturePercentage: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Measurement',
+    updatedAt: false,
   });
   return Measurement;
 };

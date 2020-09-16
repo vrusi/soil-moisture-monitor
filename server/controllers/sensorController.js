@@ -1,4 +1,7 @@
 var Sensor = require("../models").Sensor;
+var Measurement = require("../models").Measurement;
+
+Sensor.Measurement = Sensor.hasMany(Measurement, { foreignKey: "sensorID" });
 
 exports.create = function (req, res) {
   return Sensor.create({
