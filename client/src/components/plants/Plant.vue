@@ -175,11 +175,12 @@ export default {
     return {
       show: false,
       isEditing: false,
-      newName: "",
-      newSensor: null,
-      newDescription: "",
-      newRecommendedMoisturePercentage: null,
-      newImagePath: "",
+      newName: this.plant.name || "",
+      newSensor: this.plant.sensor || null,
+      newDescription: this.plant.description || "",
+      newRecommendedMoisturePercentage:
+        this.plant.recommendedMoisturePercentage || null,
+      newImagePath: this.plant.imagePath || "",
       iconColor: "black",
       iconSize: "medium",
       tooltipPercentage: "Current soil moisture percentage",
@@ -212,11 +213,12 @@ export default {
 
     changesMade() {
       return !(
-        this.newName === "" &&
-        this.newSensor === null &&
-        this.newDescription === "" &&
-        this.newRecommendedMoisturePercentage === null &&
-        this.newImagePath === ""
+        this.newName === this.plant.name &&
+        this.newSensor === this.plant.sensor &&
+        this.newDescription === this.plant.description &&
+        this.newRecommendedMoisturePercentage ===
+          this.plant.recommendedMoisturePercentage &&
+        this.newImagePath === this.plant.imagePath
       );
     },
 
@@ -246,11 +248,11 @@ export default {
 
   methods: {
     resetFormData() {
-      this.newName = "";
-      this.newSensor = null;
-      this.newDescription = "";
-      this.newRecommendedMoisturePercentage = null;
-      this.newImagePath = "";
+      this.newName = this.plant.name;
+      this.newSensor = this.sensor;
+      this.newDescription = this.plant.description;
+      this.newRecommendedMoisturePercentage = this.plant.recommendedMoisturePercentage;
+      this.newImagePath = this.plant.imagePath;
     },
 
     cancelEdit() {
@@ -278,17 +280,11 @@ export default {
         const responsePlant = await window.axios.patch(
           "/plants/" + this.plant.id,
           {
-            newName: this.newName ? this.newName : this.plant.name,
-            newDescription: this.newDescription
-              ? this.newDescription
-              : this.plant.description,
+            newName: this.newName,
+            newDescription: this.newDescription,
             newRecommendedMoisturePercentage: this
-              .newRecommendedMoisturePercentage
-              ? this.newRecommendedMoisturePercentage
-              : this.plant.recommendedMoisturePercentage,
-            newImagePath: this.newImagePath
-              ? this.newImagePath
-              : this.plant.imagePath,
+              .newRecommendedMoisturePercentage,
+            newImagePath: this.newImagePath,
           }
         );
 

@@ -164,12 +164,12 @@ export default {
       show: false,
       isEditing: false,
       valid: true,
-      newLabel: "",
-      newPlant: null,
-      newAirValue: null,
-      newWaterValue: null,
-      newVersion: "",
-      newNotes: "",
+      newLabel: this.sensor.label || "",
+      newPlant: this.sensor.plant || null,
+      newAirValue: this.sensor.airValue || null,
+      newWaterValue: this.sensor.waterValue || null,
+      newVersion: this.sensor.version || "",
+      newNotes: this.sensor.notes || "",
       tooltipPlant: "The plant this sensor is currently monitoring",
       tooltipAirValue: "The captured capacitance value in air",
       tooltipWaterValue: "The captured capacitance value in water",
@@ -206,24 +206,24 @@ export default {
 
     changesMade() {
       return !(
-        this.newLabel === "" &&
-        this.newPlant === null &&
-        this.newAirValue === null &&
-        this.newWaterValue === null &&
-        this.newVersion === "" &&
-        this.newNotes === ""
+        this.newLabel === this.sensor.label &&
+        this.newPlant === this.plant &&
+        this.newAirValue === this.sensor.airValue &&
+        this.newWaterValue === this.sensor.waterValue &&
+        this.newVersion === this.sensor.version &&
+        this.newNotes === this.sensor.notes
       );
     },
   },
 
   methods: {
     resetFormData() {
-      this.newLabel = "";
-      this.newPlant = null;
-      this.newAirValue = null;
-      this.newWaterValue = null;
-      this.newVersion = "";
-      this.newNotes = "";
+      this.newLabel = this.sensor.label;
+      this.newPlant = this.plant;
+      this.newAirValue = this.sensor.airValue;
+      this.newWaterValue = this.sensor.waterValue;
+      this.newVersion = this.sensor.version;
+      this.newNotes = this.sensor.notes;
     },
 
     async deleteSensor() {
@@ -275,7 +275,7 @@ export default {
 
         var newPlantID = null;
 
-        if (this.newPlant) {
+        if (this.newPlant != this.plant) {
           if (this.newPlant != "None") {
             newPlantID = this.newPlant.id;
           }
@@ -286,16 +286,12 @@ export default {
           "/sensors/" + this.sensor.id,
           {
             id: this.sensor.id,
-            label: this.newLabel ? this.newLabel : this.sensor.label,
+            label: this.newLabel,
             plantID: newPlantID,
-            airValue: this.newAirValue
-              ? this.newAirValue
-              : this.sensor.airValue,
-            waterValue: this.newWaterValue
-              ? this.newWaterValue
-              : this.sensor.waterValue,
-            version: this.newVersion ? this.newVersion : this.sensor.version,
-            notes: this.newNotes ? this.newNotes : this.sensor.notes,
+            airValue: this.newAirValue,
+            waterValue: this.newWaterValue,
+            version: this.newVersion,
+            notes: this.newNotes,
           }
         );
 
