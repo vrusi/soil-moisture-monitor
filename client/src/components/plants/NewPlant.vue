@@ -90,12 +90,14 @@ export default {
       this.sensor = null;
       this.name = "";
       this.description = "";
+      this.recommendedMoisturePercentage = null;
       this.imagePath = "";
     },
 
     async addPlant() {
       try {
-        const response = await window.axios.post("/plants", {
+
+        const responsePlant = await window.axios.post("/plants", {
           sensorID: this.sensor ? this.sensor.id : null,
           name: this.name,
           description: this.description,
@@ -103,7 +105,30 @@ export default {
           imagePath: this.imagePath,
         });
 
-        this.$store.commit("ADD_PLANT", response.data);
+        this.$store.commit("ADD_PLANT", responsePlant.data);
+
+        if (this.sensor) {
+          var sensorToAttach = this.$store.getters.sensorByID(
+            this.sensor.id
+          );
+        }
+
+        if (sensorToAttach) {
+          const responseSensor = await window.axios.patch(
+            "/sensors/" + sensorToAttach.id,
+            {
+              id: sensorToAttach.id,
+              label: sensorToAttach.label,
+              plantID: responsePlant.data.id,
+              airValue: sensorToAttach.airValue,
+              waterValue: sensorToAttach.waterValue,
+              version: sensorToAttach.version,
+              notes: sensorToAttach.notes,
+            }
+          );
+
+          this.$store.commit("UPDATE_SENSOR", responseSensor.data);
+        }
 
         this.resetFormData();
         this.$refs.form.resetValidation();
