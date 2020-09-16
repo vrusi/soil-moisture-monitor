@@ -11,6 +11,7 @@ exports.create = async function (req, res) {
       plantID: req.body.plantID,
       sensorID: req.body.sensorID,
       moistureValue: req.body.moistureValue,
+      moisturePercentage: req.body.moisturePercentage,
     });
     res.status(201).send(measurement);
   } catch (error) {
