@@ -40,3 +40,7 @@ exports.index = function (req, res) {
     .then((measurement) => res.status(200).send(measurement))
     .catch((error) => res.status(400).send(error));
 };
+
+exports.last_week = function (req, res)  {
+    
+}
