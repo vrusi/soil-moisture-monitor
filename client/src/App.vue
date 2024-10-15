@@ -24,6 +24,23 @@ export default {
       const responsePlants = await window.axios.get("plants");
       const plants = responsePlants.data;
       this.$store.commit("SET_PLANTS", plants);
+
+      /* fake measurements data */
+      /* for (var i = 0; i < 100; i++) {
+        var min = 1445;
+        var max = 3600;
+        var moistureValueGen = Math.floor(Math.random() * (max - min)) + min;
+        var hundredPercent = max - min;
+        var moisturePercentageGen =
+          ((moistureValueGen - min) / hundredPercent) * 100;
+
+        await window.axios.post("/measurements", {
+          sensorID: 1,
+          plantID: 1,
+          moistureValue: moistureValueGen,
+          moisturePercentage: moisturePercentageGen,
+        });
+      } */
     } catch (error) {
       console.log(error);
     }
@@ -32,4 +49,7 @@ export default {
 </script>
 
 <style>
+body {
+  background: antiquewhite !important;
+}
 </style>

@@ -30,7 +30,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       moisturePercentage: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,
